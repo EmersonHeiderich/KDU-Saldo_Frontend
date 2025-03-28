@@ -1,0 +1,52 @@
+# .gitignore
+
+# Specifies intentionally untracked files that Git should ignore.
+
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Vite build info
+.vite/
+
+# TypeScript cache
+*.tsbuildinfo
+.tmp/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE/Editor directories
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Test/Coverage artifacts
+coverage/
+.nyc_output/
+
+# Misc
+.eslintcache
+*.bak

@@ -1,0 +1,345 @@
+/* src/pages/Fabrics/Fabrics.module.css */
+
+.container {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-top: 0;
+}
+
+.controlsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inputGroup label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.inputGroup input {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  width: 300px;
+  height: 38px;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.inputGroup input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Container dos totalizadores, seguindo o padrão de Products */
+.totalizadoresContainer {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 12px 20px;
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color-light);
+}
+
+/* Conteúdo dos totalizadores */
+.totalizadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  width: 100%;
+}
+
+.totalizador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.totalizador i {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  opacity: 0.9;
+}
+
+.totalizador span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Container principal dos tecidos - sem overflow hidden */
+.fabricContainer {
+  margin-top: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color-light);
+  position: relative;
+}
+
+/* Container da tabela sem scroll interno */
+.fabricTableContainer {
+  width: 100%;
+}
+
+.fabricTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  table-layout: auto;
+}
+
+.tableHeader {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    padding: 10px 15px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Increased z-index to ensure it stays on top */
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+    border-bottom: 2px solid var(--primary-dark);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Add shadow for visual separation when scrolling */
+}
+.tableHeader:hover {
+    background-color: var(--primary-dark);
+}
+
+.tableHeader i {
+  font-size: 0.8em;
+  margin-left: 6px;
+  vertical-align: middle;
+  transition: opacity 0.2s ease;
+  opacity: 0.7;
+}
+.tableHeader:hover i {
+    opacity: 1;
+}
+
+.numericHeader {
+    text-align: right;
+}
+
+.fabricTable td {
+  padding: 8px 15px;
+  border-bottom: 1px solid var(--border-color-light);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* Alternating row colors */
+.fabricTable tbody tr:nth-child(even) {
+    background-color: var(--bg-secondary);
+}
+.fabricTable tbody tr:hover {
+  background-color: var(--bg-hover);
+}
+
+/* Specific Cell Styling */
+.codeCell {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+.descriptionCell {
+    min-width: 250px;
+    max-width: 450px;
+    white-space: normal;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.numericCell {
+    text-align: right;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    white-space: nowrap;
+    min-width: 90px;
+}
+
+/* Centered Numeric Cells */
+.widthCell,
+.grammageCell,
+.shrinkageCell {
+    text-align: center !important;
+}
+
+/* Saldo Cell - sempre em negrito */
+.saldoCell {
+    font-weight: 600 !important;
+}
+
+/* Status Colors for Saldo - Apenas para valores baixos e médios */
+/* Removida a classe success para usar a cor padrão da tabela */
+td.warning { 
+  color: var(--warning-color) !important; 
+  font-weight: 600 !important; 
+}
+td.danger { 
+  color: var(--danger-color) !important; 
+  font-weight: 600 !important; 
+}
+
+/* State Messages (Loading, Initial, No Data, Error) */
+.loadingOrInitialState,
+.noDataState,
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  min-height: 200px;
+  color: var(--text-secondary);
+  flex-grow: 1;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.loadingOrInitialState i,
+.noDataState i,
+.errorState i {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+  opacity: 0.7;
+}
+
+.errorState i {
+  color: var(--danger-color);
+  opacity: 1;
+}
+.loadingOrInitialState i.fa-spinner {
+  color: var(--primary-color);
+  opacity: 1;
+}
+.noDataState i {
+    color: var(--text-disabled);
+}
+
+.loadingOrInitialState p,
+.noDataState p,
+.errorState p {
+  font-size: 1.05rem;
+  max-width: 500px;
+  line-height: 1.6;
+}
+.errorState p {
+    color: var(--danger-dark);
+}
+
+/* Responsiveness */
+@media (max-width: 992px) {
+    .descriptionCell {
+        min-width: 150px;
+        max-width: 300px;
+    }
+    .numericCell {
+        min-width: 75px;
+    }
+}
+
+@media (max-width: 768px) {
+  .controlsContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .inputGroup input {
+    width: 100%;
+  }
+  .actionButtons {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .totalizadores {
+      justify-content: space-around;
+      font-size: 0.9rem;
+  }
+  .fabricTable {
+    font-size: 0.85rem;
+  }
+  .tableHeader,
+  .fabricTable td {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+    .totalizadores {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .tableHeader i {
+        display: none;
+    }
+     .fabricTable td, .tableHeader {
+        padding: 6px 8px;
+    }
+}

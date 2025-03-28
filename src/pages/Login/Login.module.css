@@ -1,0 +1,236 @@
+/* src/pages/Login/Login.module.css */
+
+.loginPageContainer { /* Style the overall page */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background-color); /* Use global background */
+    padding: 20px;
+  }
+  
+  .loginFormContainer { /* Container for the card and header/footer */
+      width: 100%;
+      max-width: 420px; /* Slightly wider */
+      text-align: center;
+  }
+  
+  .loginPageHeader {
+      margin-bottom: 30px;
+  }
+  
+  .logoIcon {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+  }
+  
+  .loginPageHeader h1 {
+      font-size: 1.8rem; /* Adjusted size */
+      color: var(--primary-color);
+      margin-bottom: 5px;
+  }
+  
+  .loginSubtitle { /* Updated class name */
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+  }
+  
+  .loginCard {
+      background-color: white;
+      border-radius: 8px; /* Consistent border-radius */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Refined shadow */
+      overflow: hidden; /* Keep content contained */
+      text-align: left; /* Align content left inside card */
+      border-top: 4px solid var(--primary-color); /* Add top border accent */
+  }
+  
+  /* Removed .loginHeader as it's now outside the card */
+  
+  .loginBody {
+      padding: 30px 25px; /* More padding */
+  }
+  
+  .formGroup {
+      margin-bottom: 20px;
+  }
+  
+  .formGroup label {
+      display: block;
+      margin-bottom: 8px; /* More space */
+      font-weight: 500;
+      color: var(--text-primary); /* Use primary text color */
+      font-size: 0.9rem;
+  }
+  
+  .inputWithIcon {
+      position: relative;
+  }
+  
+  .inputWithIcon i {
+      position: absolute;
+      left: 12px; /* Adjust icon position */
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary); /* Use secondary text color */
+      font-size: 0.9em; /* Adjust icon size */
+  }
+  
+  .inputWithIcon input {
+      width: 100%;
+      padding: 10px 12px 10px 40px; /* Adjust padding for icon */
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transitions */
+  }
+  
+  .inputWithIcon input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15); /* Subtle focus shadow */
+  }
+  
+  .loginBtn {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.05rem; /* Slightly larger button text */
+      margin-top: 10px; /* Space above button */
+      display: inline-flex; /* Align icon and text */
+      justify-content: center;
+      align-items: center;
+      gap: 8px; /* Space between icon and text */
+  }
+  
+  .loginBtn i {
+      /* No margin needed due to gap */
+  }
+  
+  .loginError {
+      background-color: #f8d7da; /* Lighter danger background */
+      color: #721c24; /* Darker danger text */
+      border: 1px solid #f5c6cb; /* Danger border */
+      padding: 12px 15px; /* More padding */
+      border-radius: 4px;
+      margin-bottom: 20px; /* More space below error */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+  }
+  
+  .loginError i {
+      color: #721c24; /* Match text color */
+      font-size: 1.1em; /* Slightly larger icon */
+  }
+  
+  .footerText {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+  }
+  
+  
+  /* Base button style if not globally defined */
+  .btn {
+    display: inline-block;
+    font-weight: 500; /* Slightly bolder */
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: var(--primary-color); /* Default to primary */
+    border: 1px solid transparent; /* Transparent border initially */
+    padding: 0.5rem 1rem; /* Adjust padding */
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    cursor: pointer;
+  }
+  .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+  }
+  
+  .btn.primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+  }
+  .btn.primary:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+  
+  .btn.secondary {
+    background-color: var(--text-secondary);
+    border-color: var(--text-secondary);
+     color: white;
+  }
+  .btn.secondary:hover:not(:disabled) {
+    background-color: #5a6268; /* Darker secondary */
+    border-color: #545b62;
+  }
+  
+  .btn.info {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+  }
+  .btn.info:hover:not(:disabled) {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+  }
+  
+  .btn.danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+     color: white;
+  }
+  .btn.danger:hover:not(:disabled) {
+    background-color: #c82333; /* Darker danger */
+    border-color: #bd2130;
+  }
+  
+  
+  /* Styles for icon-only buttons */
+  .btn.icon-only {
+      padding: 8px; /* Adjust padding for square-ish look */
+      width: 38px; /* Fixed width */
+      height: 38px; /* Fixed height */
+      line-height: 1; /* Adjust line height */
+  }
+  .btn.icon-only i {
+      margin-right: 0; /* No margin for icon-only */
+      font-size: 1rem; /* Adjust icon size if needed */
+  }
+  
+  /* Small button variant */
+  .btn.small {
+      padding: 4px 8px;
+      font-size: 0.8rem;
+  }
+  .btn.small i {
+      margin-right: 4px;
+      font-size: 0.7rem;
+  }
+  
+  
+  @media (max-width: 480px) {
+      .loginFormContainer {
+          padding: 0 10px; /* Reduce padding on very small screens */
+      }
+       .loginPageHeader h1 {
+          font-size: 1.6rem;
+      }
+       .loginSubtitle {
+          font-size: 1rem;
+      }
+       .loginBody {
+          padding: 20px 15px;
+      }
+  
+  }

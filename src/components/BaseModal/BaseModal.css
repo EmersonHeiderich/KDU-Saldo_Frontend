@@ -1,0 +1,132 @@
+/* src/components/BaseModal/BaseModal.css */
+
+/* Animations */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modalSlideIn {
+  from { transform: translateY(-30px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes modalSlideOut {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(-30px) scale(0.98); opacity: 0; }
+}
+
+/* Overlay */
+.base-modal-overlay {
+  position: fixed;
+  inset: 0; /* Replaces top, left, width, height */
+  background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Higher z-index */
+  padding: 20px; /* Add padding for smaller screens */
+  animation: modalFadeIn 0.3s ease-out forwards;
+  overflow-y: auto; /* Allow overlay scroll if content is too tall */
+}
+
+.base-modal-overlay.closing {
+  animation: modalFadeOut 0.3s ease-in forwards;
+}
+
+/* Content */
+.base-modal-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+  max-width: 95%; /* Slightly more width */
+  width: 600px; /* Default width, can be overridden by className */
+  max-height: calc(100vh - 40px); /* Max height considering padding */
+  display: flex; /* Use flex for layout */
+  flex-direction: column; /* Stack header/body/footer */
+  overflow: hidden; /* Prevent content overflow before body scrolls */
+  position: relative; /* For potential absolute elements inside */
+  animation: modalSlideIn 0.3s ease-out forwards;
+}
+
+.base-modal-content.closing {
+  animation: modalSlideOut 0.3s ease-in forwards;
+}
+
+/* Header */
+.base-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px; /* Adjusted padding */
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0; /* Prevent header shrinking */
+  background-color: #f8f9fa; /* Subtle header background */
+}
+
+.base-modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem; /* Slightly larger title */
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.base-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem; /* Larger close button */
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0 5px; /* Add some clickable area */
+  transition: color 0.2s ease;
+}
+
+.base-modal-close:hover {
+  color: var(--danger-color); /* Danger color on hover */
+}
+
+/* Body */
+.base-modal-body {
+  position: relative;
+  padding: 20px; /* Standard padding */
+  overflow-y: auto; /* Enable vertical scroll ONLY for the body */
+  flex-grow: 1; /* Allow body to take up available space */
+}
+
+/* Loading State inside Modal Body */
+.base-modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  gap: 15px; /* Space between icon and text */
+  min-height: 150px; /* Ensure loading state has some height */
+}
+
+.base-modal-loading i {
+  font-size: 2.5rem; /* Larger spinner */
+  color: var(--primary-color);
+}
+.base-modal-loading p {
+    font-size: 1rem;
+}
+
+/* Optional Footer (If implemented via prop) */
+.base-modal-footer {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end; /* Align buttons right */
+  gap: 10px;
+  flex-shrink: 0; /* Prevent footer shrinking */
+}

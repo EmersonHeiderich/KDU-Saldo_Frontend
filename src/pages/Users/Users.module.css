@@ -1,0 +1,477 @@
+/* src/pages/Users/Users.module.css */
+
+.container {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.usersContainer {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color); /* Add border */
+  margin-top: 0; /* Remove top margin */
+  flex-grow: 1; /* Allow container to fill space */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent content spill */
+}
+
+.actionsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 15px;
+  padding: 15px 20px; /* Add padding */
+  border-bottom: 1px solid var(--border-color); /* Separator */
+  background-color: #f8f9fa; /* Subtle background */
+}
+
+.searchBox {
+  position: relative;
+  min-width: 250px; /* Min width */
+  max-width: 350px; /* Max width */
+  flex-grow: 1; /* Allow search to grow */
+}
+
+.searchBox input {
+  width: 100%;
+  padding: 8px 35px 8px 12px; /* Adjust padding */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  height: 38px; /* Match button height */
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.searchBox input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+
+.searchBox i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none; /* Avoid interfering with input click */
+}
+
+.usersTableContainer {
+  overflow-x: auto; /* Allow horizontal scroll for table */
+  flex-grow: 1; /* Allow table to fill remaining space */
+}
+
+.usersTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem; /* Slightly smaller font */
+}
+
+.usersTable th,
+.usersTable td {
+  padding: 10px 15px; /* Adjusted padding */
+  text-align: left;
+  border-bottom: 1px solid #eee; /* Lighter border */
+  white-space: nowrap; /* Prevent wrapping initially */
+}
+
+.usersTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: var(--text-primary);
+  position: sticky; /* Sticky header */
+  top: 0;
+  z-index: 1;
+}
+
+/* Allow name/email/permissions to wrap if needed */
+.usersTable td:nth-child(2),
+.usersTable td:nth-child(3),
+.usersTable td:nth-child(6) {
+    white-space: normal;
+}
+
+
+.usersTable tbody tr:hover { /* Subtle hover */
+  background-color: #f5f5f5;
+}
+
+/* Status Badge */
+.statusBadge {
+  display: inline-block;
+  padding: 3px 8px; /* Adjusted padding */
+  border-radius: 4px;
+  font-size: 0.75rem; /* Smaller text */
+  font-weight: 600; /* Bolder */
+  text-transform: uppercase; /* Uppercase status */
+  letter-spacing: 0.5px;
+  line-height: 1.2; /* Adjust line height */
+}
+
+.active {
+  background-color: #eaf7f1; /* Lighter success */
+  color: #1e8e5b; /* Darker success text */
+}
+
+.inactive {
+  background-color: #fdeded; /* Lighter danger */
+  color: #b83b3b; /* Darker danger text */
+}
+
+/* Permissions Badges */
+.permissionsBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 150px; /* Ensure space for badges */
+}
+
+.permissionBadge {
+  display: inline-block;
+  padding: 2px 6px; /* Smaller padding */
+  border-radius: 3px;
+  font-size: 0.7rem; /* Smaller text */
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap; /* Prevent badge text wrap */
+}
+
+/* Colors matching Home page */
+.admin { background-color: #fdeded; color: #b83b3b; border: 1px solid #f5c6cb; }
+.products { background-color: #eaf7f1; color: #1e8e5b; border: 1px solid #a7d7b9; }
+.fabrics { background-color: #e1f5fe; color: #01579b; border: 1px solid #90caf9; }
+.customerPanel { background-color: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.fiscal { background-color: #fff8e1; color: #ff6f00; border: 1px solid #ffcc80; } /* Added fiscal */
+
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  gap: 5px;
+}
+
+.btnIcon {
+  width: 34px; /* Slightly larger */
+  height: 34px;
+  border-radius: 4px;
+  border: none;
+  background-color: transparent;
+  color: var(--text-secondary); /* Subtle default color */
+  cursor: pointer;
+  display: inline-flex; /* Use inline-flex */
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btnIcon:hover {
+  background-color: #eee; /* Subtle background on hover */
+}
+.btnIcon:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.edit:hover:not(:disabled) { color: var(--accent-color); }
+.delete:hover:not(:disabled) { color: var(--danger-color); }
+
+/* Table States */
+.loadingRow td,
+.errorRow td,
+.emptyRow td { /* Apply styles to the TD */
+  text-align: center;
+  padding: 40px 20px !important; /* Ensure padding overrides */
+  color: var(--text-secondary);
+}
+
+.loadingRow span,
+.errorRow span,
+.emptyRow span { /* Style the text inside */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+
+.errorRow span { color: var(--danger-color); }
+
+.spinnerSmall { /* Spinner for loading row */
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Modal Styles (UserModal & ConfirmModal) --- */
+
+/* Use more specific class names to avoid conflicts */
+.userModalContent, .confirmModalContent {
+    /* BaseModal already provides width, max-width, etc. */
+    /* Add specific overrides here if needed */
+    max-width: 550px; /* Example: Slightly wider user modal */
+}
+
+/* Body padding is handled by BaseModal's .base-modal-body */
+/* Specific styling for confirm modal body */
+.modalBodyConfirm {
+    padding: 25px 20px;
+    font-size: 1.05rem;
+    text-align: center;
+    color: var(--text-primary);
+}
+.modalBodyConfirm p {
+    line-height: 1.5;
+}
+
+/* Footer is handled by BaseModal structure, style buttons here */
+.modalFooter {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid #eee; /* Add separator */
+  border-bottom-left-radius: 8px; /* Match BaseModal */
+  border-bottom-right-radius: 8px;
+}
+.modalFooter .btn { /* Style buttons within footer */
+    min-width: 100px; /* Minimum button width */
+}
+
+/* User Modal Form Styles */
+.formGroup {
+  margin-bottom: 18px; /* Consistent spacing */
+}
+.formGroup:last-of-type {
+    margin-bottom: 25px; /* More space before footer */
+}
+
+
+.formGroup label {
+  display: block;
+  margin-bottom: 6px; /* Space between label and input */
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="email"],
+.formGroup input[type="password"] {
+  width: 100%;
+  padding: 9px 12px; /* Adjusted padding */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.formGroup input:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+
+.helpText { /* For 'leave blank' password hint */
+  display: block;
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.formError { /* Error message inside modal */
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-top: 15px;
+  margin-bottom: 15px; /* Space below error */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.formErrorInline { /* Error message below input */
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+
+/* Toggle Switch Styling */
+.toggleSwitch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px; /* Space above toggle */
+}
+
+.toggleSwitch input[type="checkbox"] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
+.toggleSwitch .toggleLabel { /* Use specific class */
+  cursor: pointer;
+  width: 44px; /* Adjusted size */
+  height: 22px;
+  background: #ccc; /* Default off background */
+  display: block;
+  border-radius: 22px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.toggleSwitch .toggleLabel:after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px; /* Adjust handle size */
+  height: 18px;
+  background: white;
+  border-radius: 18px;
+  transition: 0.3s ease;
+}
+
+.toggleSwitch input:checked + .toggleLabel {
+  background: var(--success-color);
+}
+
+.toggleSwitch input:checked + .toggleLabel:after {
+  left: calc(100% - 2px);
+  transform: translateX(-100%);
+}
+.toggleSwitch input:disabled + .toggleLabel {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+.toggleSwitch input:disabled + .toggleLabel:after {
+    background-color: #f5f5f5;
+}
+
+.toggleSwitch span { /* Text next to toggle */
+    font-size: 0.95rem;
+}
+
+/* Permissions Styling */
+.permissionsContainer {
+  display: grid; /* Use grid for alignment */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid #eee; /* Subtle border */
+  border-radius: 4px;
+  background-color: #fdfdfd;
+}
+
+.permissionItem {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between checkbox and label */
+}
+
+.permissionCheckbox {
+  width: 16px; /* Adjust size */
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+.permissionCheckbox:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+.permissionItem label {
+  margin-bottom: 0; /* Remove bottom margin */
+  font-weight: normal; /* Normal weight */
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .actionsBar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .searchBox {
+        max-width: none; /* Allow full width */
+        width: 100%;
+    }
+    .usersTable th, .usersTable td {
+        padding: 8px 10px; /* Reduce padding */
+        white-space: normal; /* Allow wrapping on mobile */
+    }
+     .permissionsBadges {
+        min-width: unset;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Further reduce font size for table on very small screens */
+    .usersTable {
+        font-size: 0.8rem;
+    }
+    .permissionBadge {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+    }
+    .actions {
+        gap: 2px; /* Reduce gap between action buttons */
+    }
+    .btnIcon {
+        width: 28px;
+        height: 28px;
+    }
+     .btnIcon i {
+        font-size: 0.8rem;
+    }
+     .modalFooter {
+        flex-direction: column-reverse; /* Stack buttons vertically */
+        gap: 8px;
+    }
+     .modalFooter .btn {
+        width: 100%; /* Full width buttons */
+    }
+}

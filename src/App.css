@@ -1,0 +1,342 @@
+/* src/App.css */
+
+/* Define CSS Variables (Color Palette, etc.) */
+:root {
+  /* Primary Palette */
+  --primary-color: #2c3e50; /* Dark Blue-Gray */
+  --primary-dark: #1f2c3a;  /* Darker Blue-Gray */
+  --primary-light: #3a506b; /* Lighter Blue-Gray */
+
+  /* Accent Palette */
+  --accent-color: #3498db; /* Bright Blue */
+  --accent-dark: #2980b9;  /* Darker Bright Blue */
+  --accent-light: #5dade2; /* Lighter Bright Blue */
+
+  /* Status Colors */
+  --success-color: #27ae60; /* Green */
+  --success-light: #eaf7f1;
+  --warning-color: #f39c12; /* Orange */
+  --warning-light: #fef5e7;
+  --danger-color: #c0392b;  /* Red */
+  --danger-light: #fdeded;
+  --info-color: #3498db;   /* Blue (same as accent) */
+  --info-light: #e1f5fe;
+
+  /* Text Colors */
+  --text-primary: #34495e; /* Dark Gray */
+  --text-secondary: #7f8c8d; /* Medium Gray */
+  --text-light: #ffffff;   /* White */
+  --text-on-primary: #ffffff; /* Text on primary background */
+  --text-on-accent: #ffffff;  /* Text on accent background */
+
+  /* Background Colors */
+  --background-color: #ecf0f1; /* Light Gray */
+  --bg-secondary: #f8f9fa;   /* Very Light Gray */
+  --bg-hover: #e9ecef;      /* Hover background */
+  --bg-white: #ffffff;
+
+  /* Border & Shadow */
+  --border-color: #dfe4e8; /* Light Gray Border */
+  --border-radius: 6px;    /* Standard border radius */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-speed: 0.2s;
+  --transition-ease: ease-in-out;
+}
+
+/* Global Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px; /* Base font size */
+}
+
+body {
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+  height: 100%; /* Ensure body takes full height */
+  overflow-x: hidden; /* Prevent horizontal scroll on body */
+}
+
+#root {
+  min-height: 100vh; /* Ensure root takes at least full height */
+  display: flex; /* Use flex for main layout */
+  flex-direction: column;
+}
+
+/* App Container and Layout */
+/* Removed .app-container rules as layout is handled differently now */
+
+.content-wrapper {
+  flex-grow: 1; /* Allow content to take remaining space */
+  transition: margin-left var(--transition-speed) var(--transition-ease); /* Smooth sidebar transition */
+  display: flex;
+  flex-direction: column; /* Stack content and footer */
+  /* overflow-x: hidden; // Moved to body */
+  padding-top: 54px; /* Add padding matching approx toggle button height + margin */
+}
+
+.main-content-container {
+    padding: 20px;
+    flex-grow: 1; /* Allow this container to grow */
+    max-width: 1400px; /* Optional: Max width for content */
+    margin-left: auto; /* Center content */
+    margin-right: auto;
+    width: 100%;
+}
+
+.app-footer { /* Specific class for footer */
+  text-align: center;
+  padding: 15px 20px; /* Reduced padding */
+  margin-top: auto; /* Push footer to bottom */
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-secondary); /* Subtle background */
+  flex-shrink: 0; /* Prevent footer shrinking */
+}
+.footer-user-info {
+    font-size: 0.75rem;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+/* Full Page Loading Indicator */
+.app-loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed; /* Cover whole screen */
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
+  z-index: 2000; /* High z-index */
+  color: var(--primary-color);
+  gap: 15px;
+}
+.app-loading-indicator i {
+  font-size: 2.5rem;
+}
+.app-loading-indicator p {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+
+/* Base Button Styles (can be overridden by modules) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Space between icon and text */
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  border: 1px solid transparent; /* Start with transparent border */
+  cursor: pointer;
+  font-size: 0.95rem; /* Base button font size */
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  white-space: nowrap; /* Prevent wrapping */
+  transition: all var(--transition-speed) var(--transition-ease);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none; /* No lift when disabled */
+}
+.btn:not(:disabled):hover {
+  transform: translateY(-1px); /* Subtle lift */
+  box-shadow: var(--shadow-sm);
+}
+.btn:not(:disabled):active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Button Variants */
+.btn.primary { background-color: var(--primary-color); border-color: var(--primary-color); color: var(--text-on-primary); }
+.btn.primary:hover:not(:disabled) { background-color: var(--primary-dark); border-color: var(--primary-dark); }
+
+.btn.secondary { background-color: var(--text-secondary); border-color: var(--text-secondary); color: var(--text-light); }
+.btn.secondary:hover:not(:disabled) { background-color: #5a6268; border-color: #545b62; }
+
+.btn.info { background-color: var(--info-color); border-color: var(--info-color); color: var(--text-light); }
+.btn.info:hover:not(:disabled) { background-color: var(--accent-dark); border-color: var(--accent-dark); }
+
+.btn.danger { background-color: var(--danger-color); border-color: var(--danger-color); color: var(--text-light); }
+.btn.danger:hover:not(:disabled) { background-color: #a53125; border-color: #9e2f23; } /* Darker red */
+
+/* Button Sizes & Styles */
+.btn.icon-only {
+    padding: 8px;
+    width: 38px;
+    height: 38px;
+}
+.btn.icon-only i { margin-right: 0; }
+
+.btn.small {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+.btn.small i {
+    margin-right: 5px;
+    font-size: 0.75rem;
+}
+
+/* Basic Form Styles (can be overridden) */
+.inputGroup, .formGroup { /* Common form group styling */
+  margin-bottom: 15px;
+}
+.inputGroup label, .formGroup label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+/* Target specific input types for consistent height */
+.inputGroup input[type="text"],
+.inputGroup input[type="email"],
+.inputGroup input[type="password"],
+.inputGroup input[type="search"],
+.inputGroup input[type="number"],
+.inputGroup select,
+.formGroup input[type="text"],
+.formGroup input[type="email"],
+.formGroup input[type="password"],
+.formGroup input[type="search"],
+.formGroup input[type="number"],
+.formGroup select {
+    width: 100%;
+    padding: 8px 12px; /* Consistent padding */
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    line-height: 1.5;
+    height: 38px; /* Consistent height */
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.inputGroup textarea,
+.formGroup textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    line-height: 1.5;
+    min-height: 80px; /* Minimum textarea height */
+    resize: vertical; /* Allow vertical resize */
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.inputGroup input:focus, .inputGroup select:focus, .inputGroup textarea:focus,
+.formGroup input:focus, .formGroup select:focus, .formGroup textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+.inputGroup select {
+    appearance: none; /* Remove default select arrow */
+    background-color: white; /* Ensure select background */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem; /* Space for arrow */
+}
+
+/* Help Text */
+.helpText {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+
+/* --- Responsive Adjustments --- */
+
+/* Layout Adjustments for Desktop */
+@media (min-width: 992px) {
+  main.content-wrapper {
+    margin-left: 260px; /* Match sidebar width */
+    transition: margin-left var(--transition-speed) ease-in-out;
+  }
+  /* Collapsed state: Apply class to body in MainLayout.tsx */
+  body.sidebar-desktop-collapsed main.content-wrapper {
+    margin-left: 65px; /* Collapsed width */
+  }
+}
+
+/* Layout Adjustments for Mobile */
+@media (max-width: 991.98px) {
+   main.content-wrapper {
+       padding-top: 64px; /* Adjust top padding below fixed mobile header/toggle */
+       margin-left: 0 !important; /* Ensure no margin */
+   }
+}
+
+/* Ensure content wrapper takes full height */
+main.content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the content container within the wrapper can grow */
+.main-content-container {
+  padding: 20px;
+  flex-grow: 1;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+@media (max-width: 768px) {
+.main-content-container {
+    padding: 15px;
+}
+}
+
+@media (max-width: 768px) {
+  html {
+      font-size: 15px; /* Slightly smaller base font on mobile */
+  }
+  .main-content-container {
+      padding: 15px; /* Reduced padding */
+  }
+  .app-footer {
+      padding: 10px 15px;
+  }
+   .btn {
+       padding: 7px 14px; /* Adjust button padding */
+       font-size: 0.9rem;
+   }
+   .btn.icon-only {
+       width: 36px;
+       height: 36px;
+       padding: 6px;
+   }
+    .btn.small {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+
+}

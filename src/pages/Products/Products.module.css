@@ -1,0 +1,663 @@
+/* src/pages/Products/Products.module.css */
+
+/* Estilos gerais da página */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  height: 100%;
+  /* background-color: var(--bg-primary); /* Consider adding a base background if needed */
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-top: 0;
+}
+
+/* Estilos dos controles */
+.controlsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align items vertically */
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px; /* Increase gap slightly */
+  background-color: white;
+  padding: 15px 20px; /* Adjust padding */
+  border-radius: var(--border-radius-medium); /* Use variable */
+  box-shadow: var(--shadow-sm); /* Use variable */
+}
+
+.controls {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end; /* Align form elements to bottom */
+  flex-wrap: wrap;
+  flex-grow: 1; /* Allow controls to grow */
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inputGroup label {
+  font-size: 0.85rem; /* Slightly smaller label */
+  color: var(--text-secondary);
+  font-weight: 500;
+  /* Removed margin-bottom, rely on gap */
+}
+
+.inputGroup input,
+.inputGroup select {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small); /* Use variable */
+  font-size: 0.9rem; /* Adjust font size */
+  height: 38px; /* Standard height */
+  box-sizing: border-box;
+  min-width: 150px; /* Ensure inputs have minimum width */
+}
+
+.inputGroup input:focus,
+.inputGroup select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+}
+
+.selectInput { /* Specific class for select if needed */
+    /* Styles specific to select, if any */
+}
+
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  align-items: center; /* Align buttons vertically */
+  /* height: 38px; /* Removed fixed height, let buttons define height */
+}
+
+/* Estilos da informação de referência */
+.referenceInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: white;
+  padding: 12px 20px; /* Adjust padding */
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.referenceIcon {
+  font-size: 1.3rem; /* Slightly larger */
+  color: var(--primary-color);
+}
+
+.referenceCodeText {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+.referenceCodeText strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.totalizers {
+  display: flex;
+  margin-left: auto; /* Pushes to the right */
+  gap: 25px; /* Increase gap */
+  flex-wrap: wrap; /* Allow wrapping */
+}
+
+.totalizer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.totalizer i {
+  font-size: 1.1rem; /* Slightly smaller */
+  color: var(--text-secondary); /* More subtle color */
+}
+
+.totalizer span {
+  font-size: 0.95rem; /* Adjust size */
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Estilos da matriz de produtos */
+.matrixContainer {
+  overflow-x: auto; /* Allow horizontal scroll */
+  background: white;
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-md); /* Slightly larger shadow */
+  margin: 0; /* Remove default margin */
+  overflow: hidden; /* Prevent content overflow breaking radius */
+}
+
+.matrixTable {
+  width: 100%;
+  min-width: 600px; /* Minimum width before scroll */
+  border-collapse: separate; /* Allows border-radius on cells if needed */
+  border-spacing: 0;
+  font-size: 0.9rem; /* Adjust base font size */
+  table-layout: fixed; /* Helps with consistent column widths */
+}
+
+.matrixTable th,
+.matrixTable td {
+  padding: 10px 12px; /* Adjust padding */
+  text-align: center;
+  border-bottom: 1px solid var(--border-color-light); /* Lighter border */
+  white-space: nowrap; /* Prevent wrapping in cells */
+}
+
+/* Header specific */
+.matrixTable th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600; /* Bolder header */
+  position: sticky; /* Make header sticky */
+  top: 0;
+  z-index: 10; /* Ensure header is above content */
+}
+
+.colorHeader, .colorCell {
+  text-align: left;
+  position: sticky; /* Make first column sticky */
+  left: 0;
+  background-color: white; /* Background needed for sticky */
+  z-index: 5; /* Below header */
+  border-right: 1px solid var(--border-color-light); /* Separator line */
+  width: 150px; /* Fixed width for color column */
+}
+.matrixTable th.colorHeader {
+    background-color: var(--primary-color); /* Keep header background */
+    color: white;
+    z-index: 11; /* Above other sticky elements */
+}
+
+
+.colorCell {
+  font-weight: 500;
+}
+
+.balanceCell {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  font-weight: 500;
+}
+
+.balanceCell:hover {
+  filter: brightness(0.95); /* More subtle hover */
+}
+
+.emptyCell {
+  color: var(--text-disabled); /* More distinct color for empty */
+  font-style: italic;
+}
+
+/* Classes de status - Keep as they are, colors defined by variables */
+.suficiente {
+  background-color: var(--success-light);
+  color: var(--success-dark); /* Darker text for contrast */
+}
+
+.baixo {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.critico {
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+}
+.erro { /* Style for error status */
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+  font-weight: bold;
+  text-decoration: line-through;
+}
+
+
+/* Estilos dos estados */
+.initialState,
+.loadingState,
+.errorState,
+.noData,
+.emptyState,
+.modalErrorContent, /* Added modal states */
+.modalEmptyContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px; /* Adjust padding */
+  text-align: center;
+  background-color: white;
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-secondary);
+  min-height: 200px; /* Give states some minimum height */
+}
+
+.initialState i,
+.loadingState i,
+.errorState i,
+.noData i,
+.emptyState i,
+.modalErrorContent i,
+.modalEmptyContent i {
+  font-size: 2.5rem; /* Adjust icon size */
+  color: var(--text-disabled); /* Default disabled color */
+  margin-bottom: 15px;
+  display: block; /* Ensure icon is block element */
+}
+
+.errorState i, .modalErrorContent i {
+  color: var(--danger-color);
+}
+
+.loadingState i {
+  color: var(--primary-color);
+}
+
+.initialState p,
+.loadingState p,
+.errorState p,
+.noData p,
+.emptyState p,
+.modalErrorContent p,
+.modalEmptyContent p {
+  color: var(--text-secondary);
+  font-size: 1rem; /* Adjust font size */
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+
+/* Container principal da página (para matriz ou estados) */
+.productContainer {
+    margin-top: 20px; /* Add space above the content area */
+}
+
+/* Estilos dos modais - Mostly rely on BaseModal.css */
+
+/* Specific adjustments for modals within Products page */
+.detailsModalContent {
+    max-width: 700px; /* Wider modal for details */
+}
+.observationsModalContent {
+    max-width: 650px; /* Slightly wider */
+}
+.pendingObservationsModalContent {
+    max-width: 750px; /* Wider for table */
+}
+.confirmModalContent {
+    max-width: 450px;
+}
+.helpModal {
+    max-width: 550px;
+}
+
+/* Grid layout for modal details */
+.detailSection {
+    margin-bottom: 1rem;
+}
+.detailSection h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-dark);
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-color-light);
+    padding-bottom: 0.5rem;
+}
+.detailSection h4 i {
+    color: var(--primary-color);
+}
+
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: 0.8rem 1.5rem; /* Row and column gap */
+}
+
+.grid p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.grid strong {
+    display: block;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.1rem; /* Small space between label and value */
+}
+
+.detailSeparator {
+    border: none;
+    border-top: 1px dashed var(--border-color);
+    margin: 1.5rem 0;
+}
+
+/* --- Estilos para ObservationModal --- */
+
+.observationsList {
+  max-height: 45vh; /* Limita a altura */
+  overflow-y: auto;
+  padding: 0.2rem 0.5rem 0.2rem 0.2rem; /* Add padding for scrollbar and items */
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-small);
+  background-color: var(--bg-secondary); /* Light background for list area */
+}
+
+/* Estilo base do CARD de observação */
+.observationItem {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: 0.8rem 1rem; /* Adjust padding */
+  background-color: var(--background-light); /* White background for card */
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0.8rem; /* Space between cards */
+  position: relative;
+  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  border-left-width: 5px; /* Status border */
+  border-left-style: solid;
+}
+.observationItem:last-child {
+    margin-bottom: 0.2rem; /* Reduce margin on last item */
+}
+
+.observationItem:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light); /* Highlight border on hover */
+}
+
+/* Estilo para observação PENDENTE */
+.observationItem.pending {
+  border-left-color: var(--warning-color);
+}
+
+/* Estilo para observação RESOLVIDA */
+.observationItem.resolved {
+  border-left-color: var(--success-color);
+  opacity: 0.9; /* Slightly fade resolved items */
+}
+.observationItem.resolved .observationStatus {
+  color: var(--success-dark);
+}
+.observationItem.resolved .resolveButton {
+  display: none;
+}
+
+/* Estilo durante a ação de resolver */
+.observationItem.resolving {
+    border-left-color: var(--primary-color);
+    animation: resolvingPulseBorder 1.5s infinite;
+    opacity: 1; /* Ensure visible while resolving */
+}
+
+/* Ajustes internos do card de observação */
+.observationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem; /* Adjust spacing */
+  font-size: 0.75rem; /* Smaller header text */
+  color: var(--text-secondary);
+}
+
+.observationHeader i {
+  margin-right: 0.3rem;
+  vertical-align: middle; /* Align icons better */
+}
+
+.observationUser,
+.observationDate {
+  display: inline-flex;
+  align-items: center;
+}
+
+.observationContent {
+  margin-bottom: 0.8rem; /* Adjust spacing */
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.9rem; /* Standard text size */
+  color: var(--text-primary);
+}
+
+.observationFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color-light);
+  padding-top: 0.6rem; /* Adjust spacing */
+  margin-top: 0.8rem; /* Adjust spacing */
+}
+
+.observationStatus {
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+.observationStatus i {
+    margin-right: 0.4rem;
+    font-size: 0.9em;
+}
+
+.observationItem.pending .observationStatus {
+  color: var(--warning-dark);
+}
+
+.resolvedBy {
+  font-style: italic;
+}
+
+.resolveButton {
+   margin-left: auto; /* Push button right */
+   /* Uses .btn.small styles */
+}
+
+/* Animação de pulso */
+@keyframes resolvingPulseBorder {
+  0% { border-left-color: var(--primary-color); }
+  50% { border-left-color: var(--primary-light); }
+  100% { border-left-color: var(--primary-color); }
+}
+
+/* Seção para adicionar nova observação */
+.newObservationSection {
+  margin-top: 1rem; /* Reduced space */
+}
+
+.separator { /* Re-defined here for clarity */
+    border: none;
+    border-top: 1px solid var(--border-color-light);
+    margin: 1rem 0;
+}
+
+.newObservationForm textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  margin-bottom: 0.5rem;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.newObservationForm textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+}
+
+.formActions {
+    text-align: right;
+}
+
+/* Mensagem de erro inline */
+.formErrorInline {
+    color: var(--danger-color);
+    font-size: 0.8rem;
+    margin-top: -0.3rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: left; /* Align left below textarea */
+}
+
+/* Estilos para a lista de observações pendentes */
+.searchContainer {
+  margin-bottom: 15px;
+}
+
+.searchInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInputContainer i {
+  position: absolute;
+  left: 10px;
+  color: var(--text-secondary);
+  pointer-events: none; /* Allow clicking through icon */
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px 8px 35px; /* Padding for icon */
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  font-size: 0.9rem;
+}
+.searchInput:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+}
+
+.pendingObservationsContainer {
+  max-height: 60vh; /* Increase max height */
+  overflow-y: auto;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-small);
+}
+
+.pendingObservationsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.pendingObservationsTable th,
+.pendingObservationsTable td {
+  padding: 10px 12px; /* Adjust padding */
+  border-bottom: 1px solid var(--border-color-light);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pendingObservationsTable th {
+  background-color: var(--bg-secondary);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+/* Specific column alignments/widths for pending table */
+.referenceCol { font-weight: 500; }
+.userCol { }
+.dateCol { width: 150px; } /* Fixed width for date */
+.actionsCol { width: 120px; text-align: center; } /* Fixed width for actions */
+
+.referenceCodeCell { font-weight: 500; }
+.userCell { }
+.dateCell { font-size: 0.85rem; color: var(--text-secondary); }
+.actionsCell { text-align: center; }
+
+
+.referenceRow {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.referenceRow:hover {
+  background-color: var(--bg-hover);
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-color-light);
+}
+
+.pageInfo {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Estilos para o badge de observações */
+.observationsButton {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  min-width: 20px; /* Use min-width */
+  height: 20px;
+  padding: 0 5px; /* Padding for numbers > 9 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  line-height: 20px; /* Ensure text is centered vertically */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.badge.hasPending { /* Use specific class for animation */
+  animation: pulse 1.5s infinite;
+}
+
+/* Animation remains the same */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Removed .noAnimation - use .hasPending directly */

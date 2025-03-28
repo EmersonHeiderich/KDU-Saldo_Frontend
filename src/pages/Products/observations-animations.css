@@ -1,0 +1,64 @@
+/* Animações para o badge de observações */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.hasPending {
+  animation: pulse 1.5s infinite;
+}
+
+.noAnimation {
+  animation: none;
+}
+
+/* Animações para as observações */
+.observation {
+  transition: all 0.3s ease;
+}
+
+.observation.pending {
+  border-left: 4px solid var(--warning-color);
+}
+
+.observation.resolved {
+  border-left: 4px solid var(--success-color);
+  opacity: 0.8;
+}
+
+/* Animação para o botão de observações */
+.observationsButton {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.observationsButton:hover {
+  transform: scale(1.05);
+}
+
+.observationsButton.hasPending {
+  animation: pulse 1.5s infinite;
+}

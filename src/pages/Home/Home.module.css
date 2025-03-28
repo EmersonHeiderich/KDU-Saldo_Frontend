@@ -1,0 +1,196 @@
+/* src/pages/Home/Home.module.css */
+
+.container {
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+  font-size: 2.2rem; /* Slightly larger */
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.cardsContainer {
+  display: grid;
+  /* Responsive grid: 1 column on small, 2 on medium, 3 on large */
+  grid-template-columns: 1fr;
+  gap: 25px; /* Increased gap */
+}
+
+@media (min-width: 768px) {
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardsContainer {
+    /* Adjust max columns based on content, 3 might be good */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  overflow: hidden;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  display: flex; /* Use flexbox for internal layout */
+  flex-direction: column; /* Stack header, body, footer vertically */
+  border-top: 4px solid transparent; /* Base border */
+}
+
+/* Specific border colors */
+.productBorder { border-top-color: var(--primary-color); }
+.fabricBorder { border-top-color: var(--accent-color); }
+.customerPanelBorder { border-top-color: #27ae60; } /* Greenish */
+.fiscalBorder { border-top-color: #e67e22; } /* Orange */
+.adminBorder { border-top-color: var(--danger-color); } /* Red for admin */
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  padding: 15px 20px; /* More padding */
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.cardHeader i {
+  font-size: 1.4rem; /* Slightly smaller icon */
+  margin-right: 12px; /* More space */
+  color: var(--primary-color); /* Consistent color */
+  width: 25px; /* Fixed width for alignment */
+  text-align: center;
+}
+
+.cardHeader span {
+  font-size: 1.3rem; /* Larger title */
+  font-weight: 600;
+  color: var(--primary-color); /* Match icon color */
+}
+
+.cardBody {
+  padding: 20px; /* More padding */
+  flex-grow: 1; /* Allow body to grow */
+}
+
+.cardDescription {
+  color: var(--text-secondary);
+  margin-bottom: 25px; /* More space */
+  font-size: 0.95rem;
+}
+
+.cardStats {
+  display: flex;
+  justify-content: space-around; /* Distribute space */
+  align-items: flex-start; /* Align items top */
+  margin-bottom: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--border-color); /* Dashed separator */
+}
+
+.stat {
+  text-align: center;
+  flex: 1;
+  padding: 0 5px; /* Add some padding */
+}
+
+.statValue {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin-bottom: 8px; /* More space */
+  /* No fixed height needed if icons have consistent size */
+}
+
+.statValue i {
+  font-size: 1.8rem; /* Larger stat icons */
+  opacity: 0.8; /* Slightly transparent */
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase; /* Uppercase labels */
+  letter-spacing: 0.5px;
+}
+
+.cardFooter {
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  text-align: right;
+  background-color: #f8f9fa; /* Subtle background */
+}
+
+.cardBtn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 18px; /* Slightly more padding */
+  border-radius: 5px; /* Slightly more rounded */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.cardBtn:hover {
+  background-color: var(--primary-dark);
+}
+
+.cardBtn i {
+  margin-right: 6px;
+  font-size: 0.8rem;
+}
+
+.noAccessState { /* Style for no permissions */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #fff; /* White background */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  border: 1px dashed var(--border-color);
+  margin-top: 30px;
+}
+
+.noAccessState i {
+  font-size: 3rem;
+  color: var(--warning-color); /* Warning color */
+  margin-bottom: 20px;
+}
+
+.noAccessState h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.noAccessState p {
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  max-width: 400px;
+  line-height: 1.5;
+}

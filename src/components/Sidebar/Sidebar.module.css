@@ -1,0 +1,246 @@
+/* src/components/Sidebar/Sidebar.module.css */
+
+/* Sidebar Container - Base Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px; /* Default expanded width */
+  height: 100vh;
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  /* Transition width for desktop collapse, transform for mobile slide */
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transform: translateX(0); /* Default desktop state */
+  overflow: hidden; /* Prevent content spill during transition */
+}
+
+/* --- Collapsed State (Desktop) --- */
+.sidebar.collapsed {
+    width: 65px; /* Collapsed width */
+}
+.sidebar.collapsed .sidebarHeader h2,
+.sidebar.collapsed .sidebarMenu span, /* Hide text spans */
+.sidebar.collapsed .sidebarFooter p,
+.sidebar.collapsed .menuDivider {
+    display: none; /* Hide text elements */
+}
+.sidebar.collapsed .sidebarMenu a i {
+    margin-right: 0; /* Remove margin when collapsed */
+}
+.sidebar.collapsed .sidebarMenu a {
+    justify-content: center; /* Center icon */
+    padding: 15px 0; /* Adjust padding */
+}
+.sidebar.collapsed .sidebarFooter i {
+    display: inline-block; /* Show user icon */
+    font-size: 1.4rem;
+}
+.sidebar.collapsed .collapsedHeaderIcon { /* Style for header icon when collapsed */
+    display: block;
+    font-size: 1.4rem;
+    margin: 0 auto; /* Center icon */
+}
+
+
+/* Sidebar Header */
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between; /* Push toggle to the right */
+  align-items: center;
+  padding: 15px 15px 15px 20px; /* Adjust padding */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+  position: relative; /* For positioning the desktop toggle */
+  overflow: hidden; /* Hide text overflowing during collapse */
+  white-space: nowrap;
+}
+/* Hide H2 smoothly during collapse */
+.sidebar.collapsed .sidebarHeader {
+    justify-content: center; /* Center icon when collapsed */
+    padding: 15px 0;
+}
+
+
+.sidebarHeader h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  transition: opacity 0.1s ease-out;
+}
+.sidebar.collapsed .sidebarHeader h2 {
+    opacity: 0;
+    position: absolute; /* Take out of flow */
+}
+.collapsedHeaderIcon { display: none; } /* Hidden by default */
+
+
+/* --- Desktop Collapse Button --- */
+.desktopCollapseToggle {
+    display: flex; /* Visible on desktop by default */
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    position: absolute; /* Position relative to header */
+    right: -14px; /* Position half outside */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1110; /* Above sidebar content */
+    opacity: 0.6;
+    transition: background-color 0.2s ease, opacity 0.2s ease, right 0.3s ease-in-out;
+}
+.desktopCollapseToggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+}
+.sidebar:hover .desktopCollapseToggle {
+    opacity: 1; /* Show clearly on sidebar hover */
+}
+.sidebar.collapsed .desktopCollapseToggle {
+    right: 10px; /* Position inside when collapsed */
+    opacity: 1; /* Always visible when collapsed */
+    background-color: transparent;
+}
+.sidebar.collapsed:hover .desktopCollapseToggle {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* Sidebar Close Button - Mobile */
+.sidebarClose {
+  display: none; /* Hidden by default (on desktop) */
+  /* ... other styles from previous version ... */
+  position: absolute; /* Position relative to header */
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Sidebar Menu */
+.sidebarMenu {
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden; /* Hide horizontal overflow */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+.sidebarMenu::-webkit-scrollbar { width: 6px; }
+.sidebarMenu::-webkit-scrollbar-track { background: transparent; }
+.sidebarMenu::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+
+.sidebarMenu li { margin: 0; }
+
+/* Menu Links */
+.inactiveLink, .activeLink {
+  display: flex;
+  align-items: center;
+  padding: 11px 20px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 0.95rem;
+  border-left: 4px solid transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inactiveLink span, .activeLink span {
+    flex-grow: 1;
+    transition: opacity 0.2s ease-out 0.1s; /* Delay text fade out */
+}
+.sidebar.collapsed .inactiveLink span,
+.sidebar.collapsed .activeLink span {
+    opacity: 0;
+}
+
+
+.inactiveLink:hover { background-color: rgba(255, 255, 255, 0.08); color: white; }
+.activeLink { background-color: rgba(0, 0, 0, 0.25); color: white; font-weight: 500; border-left-color: var(--accent-color); }
+
+/* Icons */
+.sidebarMenu a i {
+  margin-right: 14px;
+  width: 20px;
+  text-align: center;
+  font-size: 1rem;
+  opacity: 0.8;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease, margin-right 0.3s ease-in-out; /* Transition margin */
+}
+.activeLink i { opacity: 1; }
+
+/* Divider */
+.menuDivider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin: 10px 20px;
+  transition: margin 0.3s ease-in-out;
+}
+.sidebar.collapsed .menuDivider { margin: 10px 5px; } /* Reduce margin when collapsed */
+
+
+/* Sidebar Footer */
+.sidebarFooter {
+  padding: 15px 20px;
+  font-size: 0.8rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sidebarFooter p { margin-bottom: 3px; }
+.sidebarFooter i { display: none; } /* Hide icon by default */
+.appVersion { font-size: 0.7rem; opacity: 0.8; }
+
+
+/* --- Mobile Styles --- */
+.menuToggle { display: none; }
+.sidebarOverlay { display: none; }
+
+@media (max-width: 991.98px) {
+  /* Show Mobile Toggle */
+  .menuToggle { display: flex; /* ... rest of styles from previous version ... */ }
+
+  /* Hide Desktop Toggle */
+  .desktopCollapseToggle { display: none; }
+
+  /* Sidebar mobile behaviour */
+  .sidebar {
+    transform: translateX(-100%); /* Hidden by default */
+    /* Remove fixed width transition for mobile sliding */
+    transition: transform 0.3s ease-in-out;
+    width: 260px; /* Ensure fixed width for sliding */
+  }
+  .sidebar.collapsed { /* Ignore collapsed state on mobile */
+      width: 260px;
+      /* Override collapsed styles if necessary */
+  }
+  .sidebar.active { transform: translateX(0); }
+
+  .sidebarClose { display: block; /* Show mobile close */ }
+  .sidebarHeader { justify-content: space-between; } /* Ensure space for close button */
+  .sidebarHeader h2 { display: block !important; opacity: 1 !important; } /* Ensure title visible */
+
+
+  .sidebarOverlay { display: block; /* ... rest of styles from previous version ... */ }
+  .sidebarOverlay.active { opacity: 1; visibility: visible; }
+
+  /* Ensure content doesn't get desktop margin */
+  .app-container main.content-wrapper { margin-left: 0 !important; }
+}

@@ -1,0 +1,441 @@
+/* src/pages/CustomerPanel/CustomerPanel.module.css */
+
+.container {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* Search Controls */
+.controlsContainer {
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end; /* Align items bottom */
+  flex-wrap: wrap;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allow input to grow */
+  min-width: 200px; /* Minimum width */
+}
+
+.inputGroup label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+.inputGroup input[type="text"] { /* Be specific */
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  height: 38px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.inputGroup input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Increased gap */
+  padding-bottom: 2px; /* Align baseline with button/input */
+}
+
+.checkboxGroup label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem; /* Match input label */
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.checkboxGroup input[type="radio"] { /* Style radio */
+    margin-right: 5px;
+    cursor: pointer;
+    /* Optional: Custom radio style */
+    accent-color: var(--primary-color);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end; /* Align with other controls */
+}
+
+/* Use base button styles defined in App.css or index.css */
+.searchButton {
+    height: 38px; /* Match input height */
+}
+.helpButton {
+    height: 38px; /* Match input height */
+    width: 38px;
+    padding: 0; /* Remove padding for icon only */
+}
+.helpButton i {
+    margin: 0; /* Remove margin for icon only */
+}
+
+
+.errorMessage {
+  color: var(--danger-color);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  /* Position relative to input group if needed */
+}
+
+/* Main Content Area */
+.mainContent {
+  margin-top: 0; /* Remove top margin */
+  flex-grow: 1;
+  overflow-y: auto; /* Allow content scroll if needed */
+}
+
+/* State Messages */
+.loadingState,
+.errorState,
+.initialState,
+.noDataState { /* Shared styles for state indicators */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+  margin: 20px 0;
+  min-height: 200px;
+  color: var(--text-secondary);
+}
+.loadingState i,
+.errorState i,
+.initialState i,
+.noDataState i {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  opacity: 0.7;
+}
+.errorState i { color: var(--danger-color); opacity: 1; }
+.loadingState i { color: var(--primary-color); opacity: 1; }
+.initialState i, .noDataState i { color: var(--text-secondary); }
+
+.loadingState p,
+.errorState p,
+.initialState p,
+.noDataState p {
+  font-size: 1rem;
+}
+
+/* Customer Display Container */
+.customerContainer {
+  display: grid;
+  grid-template-columns: 1fr; /* Default to 1 column */
+  gap: 25px; /* Increased gap */
+  margin-top: 20px;
+}
+@media (min-width: 992px) { /* Apply 2 columns on larger screens */
+  .customerContainer {
+    grid-template-columns: 1fr 1fr; /* 2 equal columns */
+  }
+}
+
+
+/* Common styles for data/stats containers */
+.customerDataContainer,
+.statisticsContainer { /* Added class for stats */
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  padding: 20px 25px; /* Adjusted padding */
+  border: 1px solid var(--border-color);
+  /* Height considerations? Maybe allow natural height */
+}
+
+/* KPIs Container */
+.kpiContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive KPI cards */
+  gap: 15px;
+  margin-bottom: 25px; /* Space below KPIs */
+}
+
+.kpiCard {
+  background-color: white;
+  border-radius: 6px; /* Slightly less rounded */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 4px solid var(--primary-color); /* Default border color */
+  transition: box-shadow 0.2s ease;
+}
+.kpiCard:hover {
+   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.kpiIcon {
+  font-size: 1.8rem; /* Adjusted size */
+  color: var(--primary-color); /* Default icon color */
+  width: 40px; /* Fixed size */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Prevent icon shrinking */
+  /* background-color: #f0f0f0; Optional background */
+  /* border-radius: 50%; */
+}
+
+.kpiContent {
+  flex-grow: 1;
+  overflow: hidden; /* Prevent text overflow issues */
+}
+
+.kpiTitle {
+  font-size: 0.85rem; /* Smaller title */
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis if title is too long */
+}
+
+.kpiValue {
+  font-size: 1.3rem; /* Larger value */
+  font-weight: 600;
+  line-height: 1.2; /* Adjust line height */
+}
+
+/* Info Section Styling */
+.infoSection {
+  margin-bottom: 25px; /* Space between sections */
+}
+.infoSection:last-child {
+    margin-bottom: 0;
+}
+
+.infoSection h3 {
+  font-size: 1.15rem; /* Slightly smaller section headers */
+  margin-bottom: 15px;
+  color: var(--primary-color);
+  border-bottom: 1px solid #eee; /* Lighter separator */
+  padding-bottom: 8px;
+  display: flex; /* Align icon with text */
+  align-items: center;
+  gap: 8px;
+}
+.infoSection h3 i {
+    font-size: 1em; /* Match text size */
+    opacity: 0.9;
+}
+
+
+.infoSection h4 { /* Sub-headers like Telefones/Emails */
+  font-size: 1rem;
+  margin-top: 15px; /* Space above sub-header */
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* Default 1 column */
+  gap: 10px 15px; /* Row gap, Column gap */
+}
+@media (min-width: 576px) { /* Use 2 columns on slightly larger screens */
+    .infoGrid {
+        grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+    }
+}
+
+
+.infoItem {
+  /* margin-bottom: 10px; Removed, using grid gap */
+}
+
+.infoItem .label {
+  font-size: 0.85rem; /* Smaller label */
+  color: #777; /* Lighter secondary */
+  margin-bottom: 3px;
+  display: block; /* Ensure label is block */
+}
+
+.infoItem .value {
+  font-size: 0.95rem; /* Slightly smaller value */
+  font-weight: 500;
+  word-break: break-word; /* Allow long values to wrap */
+}
+
+.noInfo { /* Style for 'no data' messages within sections */
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 5px 0;
+}
+
+
+/* Contact List Styling */
+.contactSubSection {
+    margin-top: 15px;
+}
+.contactList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+.contactItem i {
+    color: var(--text-secondary);
+    width: 16px; /* Align icons */
+    text-align: center;
+}
+.contactType {
+    color: #777;
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
+.defaultBadge {
+    font-size: 0.75rem;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: auto; /* Push badge to the right */
+}
+
+
+/* Status & Tags */
+.statusActive, .statusInactive {
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  display: inline-block; /* Allow padding/background */
+}
+.statusActive { color: #1e8e5b; background-color: #eaf7f1; } /* Use background color */
+.statusInactive { color: #b83b3b; background-color: #fdeded; }
+
+.tagSection {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tag {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 12px; /* Pill shape */
+    font-weight: 500;
+}
+.tagCustomer { background-color: #e1f5fe; color: #01579b; }
+.tagSupplier { background-color: #fff8e1; color: #ff6f00; }
+.tagEmployee { background-color: #f3e5f5; color: #4a148c; }
+.tagRepresentative { background-color: #e0f2f1; color: #004d40; }
+
+
+/* Future Actions */
+.futureActions {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  padding: 15px 20px;
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap */
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--border-color);
+}
+
+.futureActions h3 {
+  margin-right: 15px;
+  margin-bottom: 0; /* Remove bottom margin */
+  color: var(--primary-color);
+  font-size: 1rem; /* Smaller header */
+  font-weight: 600;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.futureActions button {
+  margin-bottom: 0; /* Remove default button margin if any */
+  /* Use base btn styles + secondary */
+}
+.futureActions button:disabled {
+    opacity: 0.7; /* Make disabled more obvious */
+    cursor: not-allowed;
+}
+
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .inputGroup {
+      min-width: unset; /* Remove min-width */
+  }
+  .checkboxGroup {
+      padding-bottom: 0;
+      margin-top: 10px; /* Add space above radios */
+      justify-content: flex-start;
+  }
+  .actionButtons {
+      margin-top: 10px;
+      align-self: flex-end; /* Align buttons right */
+  }
+  .kpiContainer {
+      grid-template-columns: 1fr 1fr; /* 2 columns on smaller tablets */
+  }
+}
+
+@media (max-width: 576px) {
+    .infoGrid {
+        grid-template-columns: 1fr; /* Force 1 column */
+    }
+     .kpiContainer {
+      grid-template-columns: 1fr; /* 1 column on mobile */
+    }
+}
