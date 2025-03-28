@@ -13,9 +13,9 @@ export { ApiError };
 interface ApiInvoiceListItem {
     status: string | null; // electronicInvoiceStatus
     recipient_name: string | null; // personName from person expand
-    order_code: number | null; // orderCode from salesOrder expand
-    invoice_code: number | null; // invoiceCode
-    serial_code: string | null; // serialCode
+    sales_order_code: number | null; // orderCode from salesOrder expand
+    invoice_number: number | null; // invoiceCode
+    invoice_series: string | null; // serialCode
     issue_date: string | null; // receivementDate from eletronic expand OR issueDate
     total_value: number | null; // totalValue
     total_quantity: number | null; // quantity
@@ -83,9 +83,9 @@ function mapApiInvoiceToFrontend(apiInvoice: ApiInvoiceListItem): Invoice {
     return {
         status: apiInvoice.status,
         destinatario: apiInvoice.recipient_name,
-        pedidoVenda: apiInvoice.order_code,
-        numeroNota: apiInvoice.invoice_code,
-        serieNota: apiInvoice.serial_code,
+        pedidoVenda: apiInvoice.sales_order_code,
+        numeroNota: apiInvoice.invoice_number,
+        serieNota: apiInvoice.invoice_series,
         dataEmissao: apiInvoice.issue_date, // Keep ISO string, format in component
         valorTotal: apiInvoice.total_value,
         quantidadeTotal: apiInvoice.total_quantity,
@@ -116,7 +116,7 @@ export const searchInvoices = async (
             pageSize,
             customer_code_cpf_cnpj: filters.customer, // Backend needs to handle parsing this combined field
             status: filters.status ? filters.status.join(',') : undefined, // Send as comma-separated string if needed, or handle array in backend
-            invoice_code: filters.invoiceNumber,
+            invoice_number: filters.invoiceNumber,
             start_date: filters.startDate ? `${filters.startDate}T00:00:00` : undefined, // Add time part if needed by backend
             end_date: filters.endDate ? `${filters.endDate}T23:59:59` : undefined,
         };
