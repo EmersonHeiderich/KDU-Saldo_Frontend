@@ -11,7 +11,7 @@ export { ApiError };
 // Interface for a single invoice item in the API response list
 // (Simplified based on required fields for the list)
 interface ApiInvoiceListItem {
-    status: string | null; // electronicInvoiceStatus
+    status: string | null; // eletronicInvoiceStatus
     recipient_name: string | null; // personName from person expand
     sales_order_code: number | null; // orderCode from salesOrder expand
     invoice_number: number | null; // invoiceCode
