@@ -79,9 +79,9 @@ const Home: React.FC = () => {
             navigateTo: '/products',
             borderColorClass: styles.productBorder,
             stats: [
-                { icon: 'fas fa-th', label: 'Matriz Cor/Tam' }, // Updated label
-                { icon: 'fas fa-search-plus', label: 'Detalhes SKU' }, // Updated label
-                { icon: 'fas fa-comment-alt', label: 'Observações' }, // Updated label
+                { icon: 'fas fa-th', label: 'Matriz Cor/Tam' },
+                { icon: 'fas fa-search-plus', label: 'Detalhes SKU' },
+                { icon: 'fas fa-comment-alt', label: 'Observações' },
             ]
         },
         canAccessFabrics && {
@@ -91,33 +91,33 @@ const Home: React.FC = () => {
             navigateTo: '/fabrics',
             borderColorClass: styles.fabricBorder,
             stats: [
-                { icon: 'fas fa-list-ul', label: 'Listagem Completa' }, // Updated label
+                { icon: 'fas fa-list-ul', label: 'Listagem Completa' },
                 { icon: 'fas fa-dollar-sign', label: 'Custos' },
-                { icon: 'fas fa-ruler-combined', label: 'Detalhes' }, // Updated label
+                { icon: 'fas fa-ruler-combined', label: 'Detalhes' },
             ]
         },
         canAccessCustomerPanel && {
             title: 'Painel do Cliente',
             description: 'Consulte dados cadastrais e estatísticas financeiras.',
-            icon: 'fas fa-address-card', // Updated icon
+            icon: 'fas fa-address-card',
             navigateTo: '/customer-panel',
             borderColorClass: styles.customerPanelBorder,
             stats: [
-                { icon: 'fas fa-search', label: 'Buscar Cliente' }, // Updated label
+                { icon: 'fas fa-search', label: 'Buscar Cliente' },
                 { icon: 'fas fa-chart-line', label: 'Estatísticas' },
-                { icon: 'fas fa-info-circle', label: 'Dados Detalhados' }, // Updated label
+                { icon: 'fas fa-info-circle', label: 'Dados Detalhados' },
             ]
         },
         canAccessFiscal && { // Added Fiscal Card
             title: 'Módulo Fiscal',
-            description: 'Acesso a funcionalidades e consultas fiscais.',
+            description: 'Consulte notas fiscais emitidas e gere DANFEs.', // Updated description
             icon: 'fas fa-file-invoice-dollar',
             navigateTo: '/fiscal', // Define the correct route
-            borderColorClass: styles.fiscalBorder, // Add a new CSS class
+            borderColorClass: styles.fiscalBorder,
             stats: [
-                { icon: 'fas fa-receipt', label: 'Notas Fiscais' }, // Example stat
-                { icon: 'fas fa-calculator', label: 'Impostos' }, // Example stat
-                { icon: 'fas fa-book', label: 'Livros Fiscais' }, // Example stat
+                { icon: 'fas fa-search', label: 'Buscar NF-e' }, // Updated stats
+                { icon: 'fas fa-file-pdf', label: 'Gerar DANFE' },
+                { icon: 'fas fa-list-ol', label: 'Listagem' },
             ]
         },
         isAdmin && { // Admin Only Card
@@ -125,7 +125,7 @@ const Home: React.FC = () => {
              description: 'Administre usuários e suas permissões de acesso.',
              icon: 'fas fa-users-cog',
              navigateTo: '/users',
-             borderColorClass: styles.adminBorder, // Add a new CSS class
+             borderColorClass: styles.adminBorder,
              stats: [
                  { icon: 'fas fa-user-plus', label: 'Adicionar' },
                  { icon: 'fas fa-user-edit', label: 'Editar' },
@@ -138,7 +138,7 @@ const Home: React.FC = () => {
         <div className={styles.container}>
             <header className={styles.header}>
                 <h1>Página Inicial</h1>
-                <p className={styles.subtitle}>Bem-vindo(a) ao Sistema de Consulta de Saldos</p>
+                <p className={styles.subtitle}>Bem-vindo(a) ao Sistema de Consulta de Saldos e Fiscal</p>
             </header>
 
             {cards.length > 0 ? (
@@ -149,7 +149,7 @@ const Home: React.FC = () => {
                 </div>
             ) : (
                 // Message if user has no permissions to see any cards
-                <div className={styles.noAccessState}> {/* Specific style */}
+                <div className={styles.noAccessState}>
                     <i className="fas fa-lock fa-3x"></i>
                     <h3>Sem Acesso</h3>
                     <p>Você não tem permissão para acessar nenhuma funcionalidade no momento.</p>

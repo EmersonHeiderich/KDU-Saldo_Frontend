@@ -16,11 +16,10 @@ export const API_ENDPOINTS = {
 
   // Products
   PRODUCT_MATRIX: `${API_BASE_URL}/api/products/balance_matrix`,
-  // PRODUCT_VARIANT_DETAILS: `${API_BASE_URL}/api/products/variant_details`, // REMOVED - Handled by frontend cache
 
   // Fabrics
   FABRIC_BALANCES: `${API_BASE_URL}/api/fabrics/balances`,
-  FABRIC_CACHE_CLEAR: `${API_BASE_URL}/api/fabrics/cache/clear`, // <-- ADDED
+  FABRIC_CACHE_CLEAR: `${API_BASE_URL}/api/fabrics/cache/clear`,
 
   // Observations
   PRODUCT_OBSERVATIONS: (referenceCode: string) => `${API_BASE_URL}/api/observations/product/${encodeURIComponent(referenceCode)}`, // For POST, GET
@@ -31,6 +30,13 @@ export const API_ENDPOINTS = {
   // Customer Panel
   CUSTOMER_DATA: `${API_BASE_URL}/api/customer_panel/data`, // For POST
   CUSTOMER_STATISTICS: `${API_BASE_URL}/api/customer_panel/statistics`, // For GET (uses query params)
+
+  // Fiscal --- NEW ---
+  FISCAL_INVOICES_SEARCH: `${API_BASE_URL}/api/fiscal/invoices/search`, // For POST search
+  // DANFE generation might involve multiple steps handled by the service,
+  // but if the backend exposes a direct endpoint for the final PDF:
+  FISCAL_DANFE_GENERATE: (accessKey: string) => `${API_BASE_URL}/api/fiscal/danfe/${encodeURIComponent(accessKey)}`, // For GET PDF
+
 };
 
 // Ensure VITE_API_BASE_URL is defined in .env (create if not exists)

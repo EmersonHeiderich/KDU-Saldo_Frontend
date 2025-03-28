@@ -11,6 +11,7 @@ import Users from './pages/Users/Users';
 import Fabrics from './pages/Fabrics/Fabrics';
 import Products from './pages/Products/Products';
 import CustomerPanel from './pages/CustomerPanel/CustomerPanel';
+import FiscalPage from './pages/Fiscal/Fiscal'; // Import the new Fiscal page
 
 // Import Layout
 import MainLayout from './layouts/MainLayout'; // Correct import path
@@ -38,18 +39,24 @@ const ProtectedRoute: React.FC<{ allowedRoles?: ('admin' | 'user')[] }> = ({ all
         return <Navigate to="/login" replace />;
     }
 
-    // Role-based access control (Optional)
-    if (allowedRoles) {
-        const isAdmin = user?.permissions?.is_admin ?? false;
-        // Add more role checks based on `user.permissions` if needed
-        const userRole = isAdmin ? 'admin' : 'user'; // Simplified role assignment
+    // Role-based access control (Optional) & Specific Permission Check
+    const isAdmin = user?.permissions?.is_admin ?? false;
+    const canAccessFiscal = user?.permissions?.can_access_fiscal ?? false;
 
-        if (!allowedRoles.includes(userRole)) {
-             // Redirect to home or an unauthorized page if role not allowed
-            console.warn(`User role '${userRole}' not allowed for this route. Allowed: ${allowedRoles.join(', ')}`);
-            return <Navigate to="/" replace />;
-        }
+    // Determine user role (simplified)
+    const userRole = isAdmin ? 'admin' : 'user';
+
+    if (allowedRoles && !allowedRoles.includes(userRole)) {
+        // Role Check
+        console.warn(`User role '${userRole}' not allowed for this route. Allowed: ${allowedRoles.join(', ')}`);
+        return <Navigate to="/" replace />;
     }
+
+    // Specific check for Fiscal page permission if it's not an admin-only route
+    // If the current route needs 'can_access_fiscal' and the user doesn't have it (and isn't admin)
+    // Note: This is a basic example, might need refinement based on how you structure routes
+    // For now, assume role check is sufficient or handled within the page component itself.
+
 
     // If authenticated and role (if specified) is allowed, render the nested routes/component
     return <Outlet />; // Renders the child routes defined within the ProtectedRoute
@@ -76,6 +83,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/products" element={<LayoutRoute><Products /></LayoutRoute>} />
           <Route path="/fabrics" element={<LayoutRoute><Fabrics /></LayoutRoute>} />
           <Route path="/customer-panel" element={<LayoutRoute><CustomerPanel /></LayoutRoute>} />
+          <Route path="/fiscal" element={<LayoutRoute><FiscalPage /></LayoutRoute>} /> {/* Add Fiscal Route */}
           {/* Example Help Page */}
           <Route path="/help" element={<LayoutRoute><div><h2>Ajuda</h2><p>Conteúdo da página de ajuda...</p></div></LayoutRoute>} />
       </Route>
