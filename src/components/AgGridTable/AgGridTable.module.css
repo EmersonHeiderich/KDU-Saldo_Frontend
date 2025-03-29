@@ -1,0 +1,52 @@
+/* src/components/AgGridTable/AgGridTable.module.css */
+
+.agGridContainer {
+    width: 100%;
+    /*
+     * If using domLayout='normal', you MUST provide a height.
+     * Example: height: 600px;
+     * If using domLayout='autoHeight', AG Grid calculates the height.
+     */
+    /* height: 600px; */ /* Uncomment and adjust if domLayout is 'normal' */
+}
+
+/* Optional: Customize AG Grid theme variables if needed */
+/* .agGridContainer.ag-theme-quartz { */
+    /* --ag-header-background-color: var(--primary-color); */
+    /* --ag-header-foreground-color: white; */
+    /* --ag-font-size: 14px; */
+    /* --ag-row-hover-color: var(--bg-hover); */
+    /* --ag-selected-row-background-color: rgba(52, 152, 219, 0.1); */
+/* } */
+
+/* Custom styles for overlays */
+:global(.ag-overlay-loading-center) {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color-light);
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+:global(.ag-overlay-no-rows-center) {
+    background-color: rgba(248, 249, 250, 0.9);
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px dashed var(--border-color);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-style: italic;
+}
+
+/* Styling for cell status (if using cellClassRules) */
+:global(.ag-cell.cell-saldo-warning) {
+    color: var(--warning-dark) !important;
+    font-weight: 600 !important;
+}
+
+:global(.ag-cell.cell-saldo-danger) {
+    color: var(--danger-dark) !important;
+    font-weight: 600 !important;
+}

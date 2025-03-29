@@ -1,11 +1,17 @@
 /* src/App.css */
 
+/* Import AG Grid Core & Theme CSS */
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-quartz.css"; /* Or ag-theme-alpine, etc. */
+
+
 /* Define CSS Variables (Color Palette, etc.) */
 :root {
   /* Primary Palette */
   --primary-color: #2c3e50; /* Dark Blue-Gray */
   --primary-dark: #1f2c3a;  /* Darker Blue-Gray */
   --primary-light: #3a506b; /* Lighter Blue-Gray */
+  --primary-light-transparent: rgba(58, 80, 107, 0.15); /* For focus rings */
 
   /* Accent Palette */
   --accent-color: #3498db; /* Bright Blue */
@@ -14,10 +20,13 @@
 
   /* Status Colors */
   --success-color: #27ae60; /* Green */
+  --success-dark: #1e8e5b;
   --success-light: #eaf7f1;
   --warning-color: #f39c12; /* Orange */
+  --warning-dark: #c87f0a;
   --warning-light: #fef5e7;
   --danger-color: #c0392b;  /* Red */
+  --danger-dark: #a53125;
   --danger-light: #fdeded;
   --info-color: #3498db;   /* Blue (same as accent) */
   --info-light: #e1f5fe;
@@ -26,6 +35,7 @@
   --text-primary: #34495e; /* Dark Gray */
   --text-secondary: #7f8c8d; /* Medium Gray */
   --text-light: #ffffff;   /* White */
+  --text-disabled: #bdc3c7; /* Light Gray for disabled elements */
   --text-on-primary: #ffffff; /* Text on primary background */
   --text-on-accent: #ffffff;  /* Text on accent background */
 
@@ -34,10 +44,15 @@
   --bg-secondary: #f8f9fa;   /* Very Light Gray */
   --bg-hover: #e9ecef;      /* Hover background */
   --bg-white: #ffffff;
+  --background-light: #ffffff; /* Explicit white background */
+
 
   /* Border & Shadow */
   --border-color: #dfe4e8; /* Light Gray Border */
-  --border-radius: 6px;    /* Standard border radius */
+  --border-color-light: #e9ecef; /* Lighter border */
+  --border-radius: 4px;    /* Standard border radius */
+  --border-radius-small: 4px; /* Consistent small radius */
+  --border-radius-medium: 6px; /* Consistent medium radius */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -45,6 +60,17 @@
   /* Transitions */
   --transition-speed: 0.2s;
   --transition-ease: ease-in-out;
+
+  /* AG Grid Specific Variables (Optional - Customize Quartz Theme) */
+  /* --ag-foreground-color: var(--text-primary); */
+  /* --ag-background-color: var(--bg-white); */
+  /* --ag-header-background-color: var(--primary-color); */
+  /* --ag-header-foreground-color: var(--text-on-primary); */
+  /* --ag-odd-row-background-color: var(--bg-secondary); */
+  /* --ag-row-hover-color: var(--bg-hover); */
+  /* --ag-border-color: var(--border-color-light); */
+  /* --ag-font-family: 'Segoe UI', 'Roboto', sans-serif; */
+  /* --ag-font-size: 0.9rem; */
 }
 
 /* Global Reset & Base Styles */

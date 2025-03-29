@@ -24,7 +24,7 @@ interface ApiFabricResponse {
 
 // Interface used within the frontend components
 export interface Fabric {
-    codigo: number; // Keep as number
+    codigo: number;
     descricao: string;
     custo: number | null;
     saldo: number;
@@ -33,14 +33,10 @@ export interface Fabric {
     encolhimento?: number | null;
 }
 
-// --- State for Sorting ---
-// Moved sorting state management entirely to the component (Fabrics.tsx)
-// export const ordenacaoAtual = { campo: 'saldo' as keyof Fabric, direcao: 'desc' as 'asc' | 'desc' };
-
 // --- Mapping Function ---
 function mapApiFabricToFrontend(apiFabric: ApiFabric): Fabric {
     return {
-        codigo: apiFabric.code, // Keep as number
+        codigo: apiFabric.code,
         descricao: apiFabric.description,
         custo: apiFabric.cost,
         saldo: apiFabric.balance,
@@ -91,65 +87,13 @@ export async function forceClearFabricCache(): Promise<void> {
 }
 
 
-// --- Utility/Formatting Functions ---
+// --- Utility/Formatting Functions (Still useful for components/grid) ---
 
-/**
- * Filters the fabric list based on search text (client-side).
- */
-export function filterFabrics(fabrics: Fabric[], filterText: string): Fabric[] { // <-- ADDED and EXPORTED filter function
-    if (!filterText.trim()) {
-        return fabrics;
-    }
-    const lowerFilter = filterText.toLowerCase();
-    return fabrics.filter(fabric =>
-        fabric.descricao.toLowerCase().includes(lowerFilter) ||
-        String(fabric.codigo).toLowerCase().includes(lowerFilter) // Filter by code as string
-    );
-}
+// REMOVED: filterFabrics (Handled by AG Grid QuickFilter)
+// REMOVED: sortFabrics (Handled by AG Grid Column Sorting)
+// REMOVED: exportarCSVTecido (Handled by AG Grid Export API)
 
-export function sortFabrics(fabrics: Fabric[], campo: keyof Fabric, direcao: 'asc' | 'desc'): Fabric[] {
-    const validSortFields: (keyof Fabric)[] = ['codigo', 'descricao', 'custo', 'saldo', 'largura', 'gramatura', 'encolhimento'];
-
-    if (!(validSortFields as string[]).includes(campo)) {
-        console.warn(`Attempted to sort by invalid field: ${campo}. Defaulting to 'saldo'.`);
-        campo = 'saldo';
-    }
-
-    const sortField = campo;
-
-    return [...fabrics].sort((a, b) => {
-        let valorA = a[sortField];
-        let valorB = b[sortField];
-
-        const numericFields: (keyof Fabric)[] = ['codigo', 'saldo', 'custo', 'largura', 'gramatura', 'encolhimento'];
-        if (numericFields.includes(sortField)) {
-            valorA = Number(valorA ?? (direcao === 'asc' ? Infinity : -Infinity));
-            valorB = Number(valorB ?? (direcao === 'asc' ? Infinity : -Infinity));
-        } else {
-            valorA = String(valorA ?? '').toLowerCase();
-            valorB = String(valorB ?? '').toLowerCase();
-        }
-
-        if (valorA < valorB) return direcao === 'asc' ? -1 : 1;
-        if (valorA > valorB) return direcao === 'asc' ? 1 : -1;
-
-        if (sortField !== 'descricao') {
-             const descA = String(a.descricao ?? '').toLowerCase();
-             const descB = String(b.descricao ?? '').toLowerCase();
-             if (descA < descB) return -1;
-             if (descA > descB) return 1;
-        }
-        if (sortField !== 'codigo' && sortField !== 'descricao') {
-            const codeA = Number(a.codigo ?? 0);
-            const codeB = Number(b.codigo ?? 0);
-            if (codeA < codeB) return -1;
-            if (codeA > codeB) return 1;
-        }
-
-        return 0;
-    });
-}
-
+// KEEP: calculateFabricTotalizers (May be useful, though grid API can also do this)
 export function calculateFabricTotalizers(fabrics: Fabric[]): { totalSaldo: number; totalValor: number } {
   if (!fabrics || fabrics.length === 0) {
     return { totalSaldo: 0, totalValor: 0 };
@@ -169,6 +113,7 @@ export function calculateFabricTotalizers(fabrics: Fabric[]): { totalSaldo: numb
   return { totalSaldo, totalValor };
 }
 
+// KEEP: Formatting functions used by AG Grid ValueFormatters
 export function formatCurrency(value: number | null | undefined): string {
     if (value === null || value === undefined) return '-';
     try {
@@ -192,68 +137,12 @@ export function formatNumber(value: number | null | undefined): string {
      }
 }
 
-function formatNumberForCSV(value: number | null | undefined, decimalPlaces: number = 2): string {
-    if (value === null || value === undefined) return '';
-    try {
-        // Use toFixed for consistent decimal places, then replace dot with comma
-        return value.toFixed(decimalPlaces).replace('.', ',');
-    } catch {
-        return String(value);
-    }
-}
-
-
-export function exportarCSVTecido(fabrics: Fabric[]): void {
-    if (!fabrics || fabrics.length === 0) {
-      console.error('Não há dados de tecidos para exportar.');
-      alert('Não há dados para exportar.');
-      return;
-    }
-
-    const headers = [
-      'Código',
-      'Descrição',
-      'Custo Unitário',
-      'Saldo',
-      'Largura (m)',
-      'Gramatura (g/m²)',
-      'Encolhimento (%)',
-      'Valor Total (Saldo * Custo)'
-    ];
-
-    const csvRows = [headers];
-
-    fabrics.forEach(tecido => {
-      const custo = tecido.custo ?? 0;
-      const saldo = tecido.saldo ?? 0;
-      const valorTotal = saldo * custo;
-      const row = [
-        String(tecido.codigo ?? ''),
-        String(tecido.descricao ?? ''),
-        formatNumberForCSV(tecido.custo, 2),
-        saldo.toString(), // Saldo usually doesn't need decimal formatting for CSV
-        formatNumberForCSV(tecido.largura, 2),
-        formatNumberForCSV(tecido.gramatura, 0),
-        formatNumberForCSV(tecido.encolhimento, 1),
-        formatNumberForCSV(valorTotal, 2)
-      ];
-      csvRows.push(row);
-    });
-
-    const csvContent = csvRows.map(row =>
-      row.map(cell => {
-        const cellStr = cell.replace(/"/g, '""');
-        return /[";\n]/.test(cellStr) ? `"${cellStr}"` : cellStr;
-      }).join(';')
-    ).join('\n');
-
-    const blob = new Blob([`\uFEFF${csvContent}`], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.download = `tecidos_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-}
+// KEEP: formatNumberForCSV if needed elsewhere, but AG Grid handles export formatting better.
+// function formatNumberForCSV(value: number | null | undefined, decimalPlaces: number = 2): string {
+//     if (value === null || value === undefined) return '';
+//     try {
+//         return value.toFixed(decimalPlaces).replace('.', ',');
+//     } catch {
+//         return String(value);
+//     }
+// }

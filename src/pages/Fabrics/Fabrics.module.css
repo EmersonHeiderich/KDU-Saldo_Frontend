@@ -5,7 +5,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-primary);
+  /* background-color: var(--bg-primary); /* Use variables from App.css */
 }
 
 .header {
@@ -81,7 +81,7 @@
   align-items: center;
 }
 
-/* Container dos totalizadores, seguindo o padrão de Products */
+/* Container dos totalizadores */
 .totalizadoresContainer {
   display: flex;
   align-items: center;
@@ -119,126 +119,10 @@
   color: var(--text-primary);
 }
 
-/* Container principal dos tecidos - sem overflow hidden */
-.fabricContainer {
-  margin-top: 0;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color-light);
-  position: relative;
-}
+/* Removed old table styles (.fabricContainer, .fabricTableContainer, .fabricTable, .tableHeader, td styles, etc.) */
+/* AG Grid styles are now handled by the imported theme and AgGridTable.module.css */
 
-/* Container da tabela sem scroll interno */
-.fabricTableContainer {
-  width: 100%;
-}
-
-.fabricTable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  table-layout: auto;
-}
-
-.tableHeader {
-    background: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    padding: 10px 15px;
-    text-align: left;
-    position: sticky;
-    top: 0;
-    z-index: 10; /* Increased z-index to ensure it stays on top */
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background-color 0.2s ease;
-    border-bottom: 2px solid var(--primary-dark);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Add shadow for visual separation when scrolling */
-}
-.tableHeader:hover {
-    background-color: var(--primary-dark);
-}
-
-.tableHeader i {
-  font-size: 0.8em;
-  margin-left: 6px;
-  vertical-align: middle;
-  transition: opacity 0.2s ease;
-  opacity: 0.7;
-}
-.tableHeader:hover i {
-    opacity: 1;
-}
-
-.numericHeader {
-    text-align: right;
-}
-
-.fabricTable td {
-  padding: 8px 15px;
-  border-bottom: 1px solid var(--border-color-light);
-  vertical-align: middle;
-  line-height: 1.4;
-}
-
-/* Alternating row colors */
-.fabricTable tbody tr:nth-child(even) {
-    background-color: var(--bg-secondary);
-}
-.fabricTable tbody tr:hover {
-  background-color: var(--bg-hover);
-}
-
-/* Specific Cell Styling */
-.codeCell {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-.descriptionCell {
-    min-width: 250px;
-    max-width: 450px;
-    white-space: normal;
-    text-align: left;
-    font-weight: 500;
-    color: var(--text-primary);
-}
-.numericCell {
-    text-align: right;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    white-space: nowrap;
-    min-width: 90px;
-}
-
-/* Centered Numeric Cells */
-.widthCell,
-.grammageCell,
-.shrinkageCell {
-    text-align: center !important;
-}
-
-/* Saldo Cell - sempre em negrito */
-.saldoCell {
-    font-weight: 600 !important;
-}
-
-/* Status Colors for Saldo - Apenas para valores baixos e médios */
-/* Removida a classe success para usar a cor padrão da tabela */
-td.warning { 
-  color: var(--warning-color) !important; 
-  font-weight: 600 !important; 
-}
-td.danger { 
-  color: var(--danger-color) !important; 
-  font-weight: 600 !important; 
-}
-
-/* State Messages (Loading, Initial, No Data, Error) */
+/* State Messages (Loading, Initial, No Data, Error) - Keep these */
 .loadingOrInitialState,
 .noDataState,
 .errorState {
@@ -251,9 +135,11 @@ td.danger {
   min-height: 200px;
   color: var(--text-secondary);
   flex-grow: 1;
+  /* Styles adjusted to show without a border/background like the old table container */
   background-color: transparent;
   border: none;
   box-shadow: none;
+  margin-top: 20px; /* Add margin if needed */
 }
 
 .loadingOrInitialState i,
@@ -268,9 +154,13 @@ td.danger {
   color: var(--danger-color);
   opacity: 1;
 }
-.loadingOrInitialState i.fa-spinner {
+.loadingOrInitialState i.fa-spinner { /* Specific spinner styling */
   color: var(--primary-color);
   opacity: 1;
+  font-size: 2.5rem; /* Match app loading indicator */
+}
+.loadingOrInitialState i.fa-search { /* Initial state icon */
+    color: var(--text-disabled);
 }
 .noDataState i {
     color: var(--text-disabled);
@@ -288,16 +178,6 @@ td.danger {
 }
 
 /* Responsiveness */
-@media (max-width: 992px) {
-    .descriptionCell {
-        min-width: 150px;
-        max-width: 300px;
-    }
-    .numericCell {
-        min-width: 75px;
-    }
-}
-
 @media (max-width: 768px) {
   .controlsContainer {
     flex-direction: column;
@@ -307,7 +187,7 @@ td.danger {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; Removed, gap handles spacing */
   }
   .inputGroup input {
     width: 100%;
@@ -320,13 +200,7 @@ td.danger {
   .totalizadores {
       justify-content: space-around;
       font-size: 0.9rem;
-  }
-  .fabricTable {
-    font-size: 0.85rem;
-  }
-  .tableHeader,
-  .fabricTable td {
-    padding: 8px 10px;
+      gap: 15px; /* Reduce gap */
   }
 }
 
@@ -335,11 +209,5 @@ td.danger {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
-    }
-    .tableHeader i {
-        display: none;
-    }
-     .fabricTable td, .tableHeader {
-        padding: 6px 8px;
     }
 }
