@@ -1,335 +1,389 @@
 // src/pages/Users/Users.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 // Use frontend User interface and service functions
 import * as userService from '../../services/userService';
 import { User, UserCreatePayload, UserUpdatePayload } from '../../services/userService';
+
+// AG Grid Imports
+import AgGridTable from '../../components/AgGridTable/AgGridTable';
+import {
+    ColDef,
+    GridApi,
+    GridOptions,
+    ICellRendererParams,
+    ValueGetterParams, // <-- Keep ValueGetterParams if used
+    GridReadyEvent // <-- Added for onGridReady typing clarity
+} from 'ag-grid-community';
+import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
+import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme
+
+// Child Components
 import UserModal from './components/UserModal';
 import ConfirmModal from './components/ConfirmModal';
+import PermissionsCellRenderer from './components/PermissionsCellRenderer'; // <-- Import the moved component
+
+// Styles
 import styles from './Users.module.css';
 import '../../components/BaseModal/BaseModal.css'; // Ensure BaseModal CSS is loaded
 
-const Users: React.FC = () => {
-  const { user: currentUser } = useAuth();
-  const navigate = useNavigate();
+// --- Custom Cell Renderer Components (Defined Inline, except Permissions) ---
 
-  const [users, setUsers] = useState<User[]>([]); // Store frontend User objects
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [searchText, setSearchText] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Modal states
-  const [userModalOpen, setUserModalOpen] = useState(false);
-  const [userModalMode, setUserModalMode] = useState<'add' | 'edit'>('add');
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined); // Store frontend User object
-
-  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<number | null>(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-
-  // Check if user is admin
-  useEffect(() => {
-    if (currentUser && !currentUser.permissions.is_admin) {
-      navigate('/'); // Redirect non-admins
-    }
-  }, [currentUser, navigate]);
-
-  // --- Data Loading ---
-  const loadUsers = useCallback(async () => {
-    if (!currentUser?.permissions.is_admin) return; // Prevent loading if not admin
-
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await userService.getAllUsers(); // Fetches and maps to frontend User[]
-      setUsers(data);
-    } catch (error: any) {
-      console.error('Erro ao carregar usuários:', error);
-      setError(error.message || 'Erro ao carregar usuários');
-      setUsers([]); // Ensure state is empty array on error
-    } finally {
-      setLoading(false);
-    }
-  }, [currentUser]); // Depend on currentUser to ensure permissions are checked
-
-  // Load users on mount
-  useEffect(() => {
-    loadUsers();
-  }, [loadUsers]); // Use the memoized loadUsers
-
-  // --- Filtering ---
-  const filterUsers = useCallback(() => {
-    if (!searchText.trim()) {
-      setFilteredUsers(users);
-      return;
-    }
-    const lowerSearchText = searchText.toLowerCase();
-    const filtered = users.filter(
-      user =>
-        user.username.toLowerCase().includes(lowerSearchText) ||
-        user.name.toLowerCase().includes(lowerSearchText) ||
-        (user.email && user.email.toLowerCase().includes(lowerSearchText))
+// Status Cell Renderer (Could be moved to its own file)
+const StatusCellRenderer: React.FC<ICellRendererParams<User, boolean>> = ({ value }) => {
+    if (value === undefined || value === null) return null;
+    return (
+        <span className={`${styles.statusBadge} ${value ? styles.active : styles.inactive}`}>
+            {value ? 'Ativo' : 'Inativo'}
+        </span>
     );
-    setFilteredUsers(filtered);
-  }, [searchText, users]); // Depend on searchText and users
+};
 
-  // Filter users whenever search text or the main users list changes
-  useEffect(() => {
-    filterUsers();
-  }, [filterUsers]); // Use the memoized filterUsers
+// Actions Cell Renderer (Could be moved to its own file)
+// Note: Uses context passed via gridOptions to access handlers
+const ActionsCellRenderer: React.FC<ICellRendererParams<User>> = ({ data, context }) => {
+    const { handleEdit, handleDelete, currentUserId } = context;
 
-  // --- Event Handlers ---
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+    if (!data) return null; // Should not happen if rowData is valid
 
-  const openAddUserModal = () => {
-    setUserModalMode('add');
-    setSelectedUser(undefined); // Clear selected user
-    setUserModalOpen(true);
-  };
-
-  const openEditUserModal = (user: User) => {
-    setUserModalMode('edit');
-    setSelectedUser(user); // Set the selected frontend User object
-    setUserModalOpen(true);
-  };
-
-  const closeUserModal = () => {
-    setUserModalOpen(false);
-    setSelectedUser(undefined); // Clear selection on close
-  };
-
-  const openDeleteConfirmModal = (userId: number) => {
-    if (userId === currentUser?.id) {
-       alert("Você não pode excluir sua própria conta.");
-       return;
-    }
-    setUserToDelete(userId);
-    setConfirmModalOpen(true);
-  };
-
-  const closeConfirmModal = () => {
-    setConfirmModalOpen(false);
-    setUserToDelete(null);
-  };
-
-  // Saves user data (called from UserModal)
-  // Expects payload in BACKEND format (snake_case)
-  const handleSaveUser = async (payload: UserCreatePayload | UserUpdatePayload) => {
-    // No need to map here, payload is already in backend format
-    try {
-      if (userModalMode === 'add') {
-        await userService.createUser(payload as UserCreatePayload);
-      } else if (selectedUser) {
-        // Make sure not to include username in update payload
-        const { username, ...updatePayload } = payload as UserUpdatePayload & { username?: string };
-        await userService.updateUser(selectedUser.id, updatePayload);
-      }
-      await loadUsers(); // Reload user list after save
-      closeUserModal(); // Close modal on success
-    } catch (error: any) {
-      console.error('Erro ao salvar usuário (handleSaveUser):', error);
-      // Re-throw the error so the modal can display it
-      throw error;
-    }
-  };
-
-
-  const handleDeleteUser = async () => {
-    if (!userToDelete) return;
-
-    setDeleteLoading(true);
-    try {
-      await userService.deleteUser(userToDelete);
-      await loadUsers(); // Reload user list
-      closeConfirmModal();
-    } catch (error: any) {
-      console.error('Erro ao excluir usuário:', error);
-      alert(`Erro ao excluir usuário: ${error.message || 'Erro desconhecido'}`);
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
-  // --- Render Functions ---
-
-  const renderUserRow = (user: User) => {
-    // Use formatted dates directly from the User object if formatted in service
-    const lastLoginDisplay = user.lastLogin || 'Nunca';
-    const createdAtDisplay = user.createdAt || '-';
+    const onEditClick = () => handleEdit(data);
+    const onDeleteClick = () => handleDelete(data.id);
 
     return (
-      <tr key={user.id}>
-        <td>{user.username}</td>
-        <td>{user.name}</td>
-        <td>{user.email || '-'}</td>
-        <td>{lastLoginDisplay}</td>
-        <td>
-          <span className={`${styles.statusBadge} ${user.isActive ? styles.active : styles.inactive}`}>
-            {user.isActive ? 'Ativo' : 'Inativo'}
-          </span>
-        </td>
-        <td>
-          <div className={styles.permissionsBadges}>
-            {user.permissions.isAdmin && (
-              <span className={`${styles.permissionBadge} ${styles.admin}`} title="Administrador">Admin</span>
-            )}
-            {user.permissions.canAccessProducts && (
-              <span className={`${styles.permissionBadge} ${styles.products}`} title="Acesso a Produtos Acabados">Produtos</span>
-            )}
-            {user.permissions.canAccessFabrics && (
-              <span className={`${styles.permissionBadge} ${styles.fabrics}`} title="Acesso a Tecidos">Tecidos</span>
-            )}
-            {user.permissions.canAccessCustomerPanel && (
-              <span className={`${styles.permissionBadge} ${styles.customerPanel}`} title="Acesso ao Painel do Cliente">Cliente</span>
-            )}
-            {user.permissions.canAccessFiscal && (
-              <span className={`${styles.permissionBadge} ${styles.fiscal}`} title="Acesso ao Módulo Fiscal">Fiscal</span>
-            )}
-            {/* Display '-' if no specific permissions and not admin */}
-             {!user.permissions.isAdmin && !user.permissions.canAccessProducts && !user.permissions.canAccessFabrics && !user.permissions.canAccessCustomerPanel && !user.permissions.canAccessFiscal && (
-                 <span>-</span>
-             )}
-          </div>
-        </td>
-        <td>
-          <div className={styles.actions}>
+        <div className={styles.actions}>
             <button
-              className={`${styles.btnIcon} ${styles.edit}`}
-              onClick={() => openEditUserModal(user)}
-              aria-label={`Editar usuário ${user.username}`}
-              title="Editar Usuário"
+                className={`${styles.btnIcon} ${styles.edit}`}
+                onClick={onEditClick}
+                aria-label={`Editar usuário ${data.username}`}
+                title="Editar Usuário"
             >
-              <i className="fas fa-edit"></i>
+                <i className="fas fa-edit"></i>
             </button>
-            {currentUser?.id !== user.id && ( // Don't show delete for self
-                 <button
+            {/* Do not allow deleting the currently logged-in user */}
+            {currentUserId !== data.id && (
+                <button
                     className={`${styles.btnIcon} ${styles.delete}`}
-                    onClick={() => openDeleteConfirmModal(user.id)}
-                    aria-label={`Excluir usuário ${user.username}`}
+                    onClick={onDeleteClick}
+                    aria-label={`Excluir usuário ${data.username}`}
                     title="Excluir Usuário"
                 >
                     <i className="fas fa-trash-alt"></i>
                 </button>
             )}
-
-          </div>
-        </td>
-      </tr>
+        </div>
     );
-  };
+};
 
-  const renderTableContent = () => {
-    if (loading) {
-      return (
-        <tr>
-          <td colSpan={7} className={styles.loadingRow}>
-            <div className={styles.spinnerSmall}></div>
-            <span>Carregando usuários...</span>
-          </td>
-        </tr>
-      );
-    }
 
-    if (error) {
-      return (
-        <tr>
-          <td colSpan={7} className={styles.errorRow}>
-            <i className="fas fa-exclamation-triangle"></i>
-            <span>{error}</span>
-          </td>
-        </tr>
-      );
-    }
+// --- Main Users Component ---
+const Users: React.FC = () => {
+    const { user: currentUser } = useAuth();
+    const navigate = useNavigate();
+    const gridApiRef = useRef<GridApi<User> | null>(null); // Ref for AG Grid API
 
-    if (filteredUsers.length === 0) {
-      return (
-        <tr>
-          <td colSpan={7} className={styles.emptyRow}>
-            <i className="fas fa-users-slash"></i>
-            <span>{searchText ? 'Nenhum usuário encontrado para a busca.' : 'Nenhum usuário cadastrado.'}</span>
-          </td>
-        </tr>
-      );
-    }
+    // State
+    const [users, setUsers] = useState<User[]>([]); // Store all users
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    return filteredUsers.map(renderUserRow);
-  };
+    // Modal states
+    const [userModalOpen, setUserModalOpen] = useState(false);
+    const [userModalMode, setUserModalMode] = useState<'add' | 'edit'>('add');
+    const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
 
-  // --- JSX ---
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Gerenciamento de Usuários</h1>
-        <p className={styles.subtitle}>Administração de usuários e permissões do sistema</p>
-      </header>
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<number | null>(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
-      <div className={styles.usersContainer}>
-        <div className={styles.actionsBar}>
-          <button
-            id="btn-add-user"
-            className="btn primary"
-            onClick={openAddUserModal}
-          >
-            <i className="fas fa-user-plus"></i> Novo Usuário
-          </button>
-          <div className={styles.searchBox}>
-            <input
-              type="text"
-              id="search-users"
-              placeholder="Buscar por nome, usuário ou email..."
-              value={searchText}
-              onChange={handleSearchChange}
-              aria-label="Buscar usuários"
+    // Permission Check
+    useEffect(() => {
+        if (currentUser && !currentUser.permissions.is_admin) {
+            navigate('/'); // Redirect non-admins
+        }
+    }, [currentUser, navigate]);
+
+    // --- Data Loading ---
+    const loadUsers = useCallback(async () => {
+        if (!currentUser?.permissions.is_admin) return;
+        setLoading(true);
+        setError(null);
+        try {
+            const data = await userService.getAllUsers();
+            setUsers(data);
+        } catch (error: any) {
+            console.error('Erro ao carregar usuários:', error);
+            setError(error.message || 'Erro ao carregar usuários');
+            setUsers([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [currentUser]);
+
+    useEffect(() => {
+        loadUsers();
+    }, [loadUsers]);
+
+    // --- AG Grid Configuration ---
+
+    // Column Definitions
+    const columnDefs = useMemo<ColDef<User>[]>(() => [
+        {
+            headerName: 'Usuário',
+            field: 'username',
+            filter: 'agTextColumnFilter',
+            sortable: true,
+            resizable: true,
+            width: 150,
+            minWidth: 120,
+            suppressSizeToFit: true, // Don't shrink this column too much
+        },
+        {
+            headerName: 'Nome Completo',
+            field: 'name',
+            filter: 'agTextColumnFilter',
+            sortable: true,
+            resizable: true,
+            flex: 2, // Allow more space
+            minWidth: 200,
+        },
+        {
+            headerName: 'Email',
+            field: 'email',
+            filter: 'agTextColumnFilter',
+            sortable: true,
+            resizable: true,
+            valueFormatter: (params) => params.value || '-', // Display '-' if null/undefined
+            flex: 2,
+            minWidth: 200,
+        },
+        {
+            headerName: 'Último Login',
+            field: 'lastLogin', // Assumes service formats this
+            filter: 'agTextColumnFilter', // Use text filter as it's likely a formatted string
+            sortable: true,
+            resizable: true,
+            width: 170,
+            minWidth: 150,
+            suppressSizeToFit: true,
+        },
+        {
+            headerName: 'Status',
+            field: 'isActive',
+            cellRenderer: StatusCellRenderer, // Use inline/imported renderer
+            filter: 'agSetColumnFilter', // Allow filtering by Active/Inactive
+            filterParams: { // Optional: customize set filter values
+                 values: [true, false],
+                 valueFormatter: (params: {value: boolean}) => params.value ? 'Ativo' : 'Inativo',
+            },
+            sortable: true,
+            resizable: false, // Usually fixed width
+            width: 100,
+            maxWidth: 110,
+            cellStyle: { textAlign: 'center' },
+        },
+        {
+            headerName: 'Permissões',
+            field: 'permissions',
+            cellRenderer: PermissionsCellRenderer, // Use imported renderer
+            filter: false, // Filtering on this object is complex
+            sortable: false, // Sorting on this object is not meaningful
+            resizable: true,
+            flex: 1,
+            minWidth: 180,
+            autoHeight: true, // Allow row height to adjust for wrapped badges (if wrapping occurs)
+            wrapText: true, // Allow text wrapping in case tooltip fails or for future expansion
+        },
+        {
+            headerName: 'Ações',
+            colId: 'actions', // Important for context/params
+            cellRenderer: ActionsCellRenderer, // Use inline/imported renderer
+            filter: false,
+            sortable: false,
+            resizable: false,
+            width: 100,
+            minWidth: 100,
+            maxWidth: 100,
+            cellStyle: { textAlign: 'center' },
+            pinned: 'right', // Keep actions visible on scroll
+            lockPinned: true, // Prevent unpinning
+        },
+    ], []); // Empty dependency array as definitions are static
+
+    // Default Column Definitions
+    const defaultColDef = useMemo<ColDef>(() => ({
+        resizable: true,
+        sortable: true,
+        filter: true, // Enable filtering by default
+        floatingFilter: true, // Show filter below header
+        suppressMenu: false, // Allow column menu (pinning, etc.)
+    }), []);
+
+    // Grid Options - includes context for ActionsCellRenderer
+    const gridOptions = useMemo<GridOptions<User>>(() => ({
+        context: {
+            handleEdit: (user: User) => openEditUserModal(user),
+            handleDelete: (userId: number) => openDeleteConfirmModal(userId),
+            currentUserId: currentUser?.id ?? null,
+        },
+        pagination: true,
+        paginationPageSize: 20, // Adjust as needed
+        paginationPageSizeSelector: [10, 20, 50, 100],
+        domLayout: 'autoHeight', // Adjust height automatically
+        suppressCellFocus: true, // Improves keyboard navigation focus behavior
+        animateRows: true, // Enable row animations
+        // Optional: Provide a specific row ID to help preserve state
+        // getRowId: params => params.data.id.toString(),
+    }), [currentUser?.id]); // Recreate options if currentUserId changes
+
+
+    // AG Grid API Ready Callback
+    const onGridReady = useCallback((api: GridApi<User>) => {
+        gridApiRef.current = api;
+        // Optional: Auto-size columns after grid is ready and data is loaded
+        // api.sizeColumnsToFit(); // Be careful with this
+    }, []);
+
+
+    // --- Event Handlers ---
+    const openAddUserModal = () => {
+        setUserModalMode('add');
+        setSelectedUser(undefined);
+        setUserModalOpen(true);
+    };
+
+    const openEditUserModal = (user: User) => {
+        setUserModalMode('edit');
+        setSelectedUser(user);
+        setUserModalOpen(true);
+    };
+
+    const closeUserModal = () => {
+        setUserModalOpen(false);
+        setSelectedUser(undefined);
+    };
+
+    const openDeleteConfirmModal = (userId: number) => {
+        if (userId === currentUser?.id) {
+            alert("Você não pode excluir sua própria conta.");
+            return;
+        }
+        setUserToDelete(userId);
+        setConfirmModalOpen(true);
+    };
+
+    const closeConfirmModal = () => {
+        setConfirmModalOpen(false);
+        setUserToDelete(null);
+        setDeleteLoading(false); // Reset delete loading state
+    };
+
+    // Save Handler (called from UserModal via props)
+    const handleSaveUser = async (payload: UserCreatePayload | UserUpdatePayload) => {
+        try {
+            if (userModalMode === 'add') {
+                await userService.createUser(payload as UserCreatePayload);
+            } else if (selectedUser) {
+                // The modal prepares the correct payload format (snake_case, no username for update)
+                await userService.updateUser(selectedUser.id, payload as UserUpdatePayload);
+            }
+            await loadUsers(); // Reload user list after save
+            closeUserModal(); // Close modal on success
+        } catch (error: any) {
+            console.error('Erro ao salvar usuário (handleSaveUser):', error);
+            throw error; // Re-throw error for the modal to display
+        }
+    };
+
+    // Delete Handler (called from ConfirmModal via props)
+    const handleDeleteUser = async () => {
+        if (!userToDelete) return;
+        setDeleteLoading(true);
+        try {
+            await userService.deleteUser(userToDelete);
+            await loadUsers(); // Reload user list
+            closeConfirmModal();
+        } catch (error: any) {
+            console.error('Erro ao excluir usuário:', error);
+            // Show error within confirm modal or as an alert
+            alert(`Erro ao excluir usuário: ${error.message || 'Erro desconhecido'}`);
+            // Optionally keep the modal open if deletion fails, but reset loading
+            setDeleteLoading(false);
+        }
+    };
+
+    // --- JSX ---
+    return (
+        <div className={styles.container}>
+            <header className={styles.header}>
+                <h1>Gerenciamento de Usuários</h1>
+                <p className={styles.subtitle}>Administração de usuários e permissões do sistema</p>
+            </header>
+
+            <div className={styles.actionsBar}>
+                <button
+                    id="btn-add-user"
+                    className="btn primary"
+                    onClick={openAddUserModal}
+                    disabled={loading} // Disable if initial load is happening
+                >
+                    <i className="fas fa-user-plus"></i> Novo Usuário
+                </button>
+            </div>
+
+            {/* Display error above grid if load failed */}
+            {error && !loading && (
+                <div className={styles.errorRow}>
+                    <i className="fas fa-exclamation-triangle"></i>
+                    <span> {error}</span>
+                </div>
+            )}
+
+
+            {/* AG Grid Table */}
+            {/* Ensure wrapper has theme class and takes space */}
+            <div className={`ag-theme-quartz ${styles.gridWrapper}`} style={{ flexGrow: 1, width: '100%' }}>
+                <AgGridTable<User>
+                    rowData={users} // Pass the full user list
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    gridOptions={gridOptions} // Pass context via gridOptions
+                    // quickFilterText={searchText} // No longer needed, using gridApiRef.current?.setQuickFilter
+                    isLoading={loading} // Pass loading state
+                    onGridReadyCallback={onGridReady}
+                    // Pass other AG Grid props as needed
+                />
+            </div>
+
+
+            {/* Modals */}
+            <UserModal
+                isOpen={userModalOpen}
+                mode={userModalMode}
+                user={selectedUser}
+                onClose={closeUserModal}
+                onSave={handleSaveUser}
             />
-            <i className="fas fa-search"></i>
-          </div>
+
+            <ConfirmModal
+                isOpen={confirmModalOpen}
+                title="Confirmar Exclusão"
+                message={
+                    <>
+                        Tem certeza que deseja excluir o usuário{' '}
+                        <strong>{users.find(u => u.id === userToDelete)?.username || ''}</strong> permanentemente?
+                        <br />
+                        Esta ação não pode ser desfeita.
+                    </>
+                }
+                confirmLabel="Excluir"
+                onConfirm={handleDeleteUser}
+                onCancel={closeConfirmModal}
+                isLoading={deleteLoading}
+            />
         </div>
-
-        <div className={styles.usersTableContainer}>
-          <table className={styles.usersTable}>
-            <thead>
-              <tr>
-                <th>Usuário</th>
-                <th>Nome Completo</th>
-                <th>Email</th>
-                <th>Último Login</th>
-                <th>Status</th>
-                <th>Permissões</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {renderTableContent()}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modals */}
-      <UserModal
-        isOpen={userModalOpen}
-        mode={userModalMode}
-        user={selectedUser} // Pass the frontend User object
-        onClose={closeUserModal}
-        onSave={handleSaveUser} // Pass the save handler
-      />
-
-      <ConfirmModal
-        isOpen={confirmModalOpen}
-        title="Confirmar Exclusão"
-        message="Tem certeza que deseja excluir este usuário permanentemente? Esta ação não pode ser desfeita."
-        confirmLabel="Excluir"
-        onConfirm={handleDeleteUser}
-        onCancel={closeConfirmModal}
-        isLoading={deleteLoading}
-      />
-    </div>
-  );
+    );
 };
 
 export default Users;
