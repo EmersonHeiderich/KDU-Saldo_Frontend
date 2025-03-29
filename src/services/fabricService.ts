@@ -87,33 +87,11 @@ export async function forceClearFabricCache(): Promise<void> {
 }
 
 
-// --- Utility/Formatting Functions (Still useful for components/grid) ---
+// --- Utility/Formatting Functions ---
+// Removed: filterFabrics, sortFabrics, exportarCSVTecido (Handled by AG Grid)
+// REMOVED: calculateFabricTotalizers (Now handled in component using Grid API)
 
-// REMOVED: filterFabrics (Handled by AG Grid QuickFilter)
-// REMOVED: sortFabrics (Handled by AG Grid Column Sorting)
-// REMOVED: exportarCSVTecido (Handled by AG Grid Export API)
-
-// KEEP: calculateFabricTotalizers (May be useful, though grid API can also do this)
-export function calculateFabricTotalizers(fabrics: Fabric[]): { totalSaldo: number; totalValor: number } {
-  if (!fabrics || fabrics.length === 0) {
-    return { totalSaldo: 0, totalValor: 0 };
-  }
-
-  let totalSaldo = 0;
-  let totalValor = 0;
-
-  fabrics.forEach(tecido => {
-    const saldo = Number(tecido.saldo) || 0;
-    const custo = Number(tecido.custo ?? 0);
-
-    totalSaldo += saldo;
-    totalValor += saldo * custo;
-  });
-
-  return { totalSaldo, totalValor };
-}
-
-// KEEP: Formatting functions used by AG Grid ValueFormatters
+// KEEP: Formatting functions used by AG Grid ValueFormatters/CellRenderers
 export function formatCurrency(value: number | null | undefined): string {
     if (value === null || value === undefined) return '-';
     try {
@@ -130,19 +108,10 @@ export function formatCurrency(value: number | null | undefined): string {
 export function formatNumber(value: number | null | undefined): string {
     if (value === null || value === undefined) return '-';
      try {
-        return value.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+        // Ensure it's treated as a number for formatting
+        return Number(value).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
      } catch (e) {
           console.error("Error formatting number:", value, e);
           return String(value);
      }
 }
-
-// KEEP: formatNumberForCSV if needed elsewhere, but AG Grid handles export formatting better.
-// function formatNumberForCSV(value: number | null | undefined, decimalPlaces: number = 2): string {
-//     if (value === null || value === undefined) return '';
-//     try {
-//         return value.toFixed(decimalPlaces).replace('.', ',');
-//     } catch {
-//         return String(value);
-//     }
-// }

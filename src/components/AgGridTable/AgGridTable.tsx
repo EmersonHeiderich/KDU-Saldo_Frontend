@@ -1,43 +1,44 @@
 // src/components/AgGridTable/AgGridTable.tsx
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'; // <-- Added useMemo here
 import { AgGridReact } from 'ag-grid-react';
 import {
     ColDef,
     GridApi,
     GridReadyEvent,
-    // ColumnApi, // Usually GridApi is sufficient
     PaginationChangedEvent,
     FilterChangedEvent,
     SortChangedEvent,
     CsvExportParams,
     GridOptions,
+    FirstDataRenderedEvent,
 } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme CSS
 import styles from './AgGridTable.module.css';
 
 interface AgGridTableProps<TData> {
-    rowData: TData[] | null | undefined; // Data for the grid
-    columnDefs: ColDef<TData>[]; // Column definitions
-    domLayout?: 'normal' | 'autoHeight' | 'print'; // How the grid handles height
-    rowHeight?: number; // Set row height
-    headerHeight?: number; // Set header height
-    pagination?: boolean; // Enable pagination?
-    paginationPageSize?: number; // Items per page
-    paginationPageSizeSelector?: number[] | boolean; // Page size selector options
-    suppressPaginationPanel?: boolean; // Hide default pagination panel
-    defaultColDef?: ColDef; // Default column properties
-    isLoading?: boolean; // Show loading overlay?
-    onGridReadyCallback?: (api: GridApi<TData>) => void; // Callback when grid API is ready
-    onFilterChanged?: (api: GridApi<TData>) => void; // Callback on filter change
-    onSortChanged?: (api: GridApi<TData>) => void; // Callback on sort change
-    onPaginationChanged?: (event: PaginationChangedEvent<TData>) => void; // Callback on pagination change
-    quickFilterText?: string; // Text for quick filtering
-    // Add more AG Grid options as props if needed
+    rowData: TData[] | null | undefined;
+    columnDefs: ColDef<TData>[];
+    domLayout?: 'normal' | 'autoHeight' | 'print';
+    rowHeight?: number;
+    headerHeight?: number;
+    pagination?: boolean;
+    paginationPageSize?: number;
+    paginationPageSizeSelector?: number[] | boolean;
+    suppressPaginationPanel?: boolean;
+    defaultColDef?: ColDef;
+    gridOptions?: GridOptions<TData>;
+    isLoading?: boolean;
+    onGridReadyCallback?: (params: GridApi<TData>) => void;
+    onFilterChanged?: (event: FilterChangedEvent<TData>) => void;
+    onSortChanged?: (event: SortChangedEvent<TData>) => void;
+    onPaginationChanged?: (event: PaginationChangedEvent<TData>) => void;
+    onFirstDataRendered?: (event: FirstDataRenderedEvent<TData>) => void;
+    quickFilterText?: string;
 }
 
-const AgGridTable = <TData extends {} = any>({ // Default generic type if not provided
+const AgGridTable = <TData extends {} = any>({
     rowData,
     columnDefs,
     domLayout = 'autoHeight',
@@ -46,32 +47,37 @@ const AgGridTable = <TData extends {} = any>({ // Default generic type if not pr
     pagination = true,
     paginationPageSize = 50,
     paginationPageSizeSelector = [25, 50, 100, 200],
-    suppressPaginationPanel = false, // Allow custom pagination controls
+    suppressPaginationPanel = false,
     defaultColDef,
+    gridOptions,
     isLoading = false,
     onGridReadyCallback,
     onFilterChanged,
     onSortChanged,
     onPaginationChanged,
+    onFirstDataRendered,
     quickFilterText,
 }: AgGridTableProps<TData>) => {
     const gridRef = useRef<AgGridReact<TData>>(null);
     const [gridApi, setGridApi] = useState<GridApi<TData> | null>(null);
-    // const [columnApi, setColumnApi] = useState<ColumnApi | null>(null);
 
-    // Callback when grid is ready
+    // Combine default/passed gridOptions with mandatory ones
+    const internalGridOptions = useMemo(() => ({ // This line caused the error without the import
+        overlayLoadingTemplate: '<span class="ag-overlay-loading-center">Carregando...</span>',
+        overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">Nenhum dado encontrado</span>',
+        ...(gridOptions ?? {}), // Spread the passed gridOptions, ensure it's an object
+    }), [gridOptions]);
+
+
     const onGridReady = useCallback((params: GridReadyEvent<TData>) => {
-        console.log("AG Grid Ready");
+        console.log("AG Grid Ready - API available");
         setGridApi(params.api);
-        // setColumnApi(params.columnApi);
         if (onGridReadyCallback) {
             onGridReadyCallback(params.api);
         }
-        // Auto-size columns on ready (optional)
-        // params.api.sizeColumnsToFit();
     }, [onGridReadyCallback]);
 
-    // Apply quick filter when text changes
+    // Apply quick filter
     useEffect(() => {
         if (gridApi && quickFilterText !== undefined) {
             gridApi.setQuickFilter(quickFilterText);
@@ -85,31 +91,38 @@ const AgGridTable = <TData extends {} = any>({ // Default generic type if not pr
                 gridApi.showLoadingOverlay();
             } else {
                 gridApi.hideOverlay();
+                if (!rowData || rowData.length === 0) {
+                    gridApi.showNoRowsOverlay();
+                }
             }
         }
-    }, [gridApi, isLoading]);
+    }, [gridApi, isLoading, rowData]);
 
-    // Show 'No Rows' overlay when data is empty and not loading
+    // Adiciona evento de redimensionamento da janela para ajustar colunas
     useEffect(() => {
-        if (gridApi && !isLoading) {
-            if (!rowData || rowData.length === 0) {
-                gridApi.showNoRowsOverlay();
-            } else {
-                 gridApi.hideOverlay(); // Ensure 'no rows' is hidden when data arrives
-            }
-        }
-    }, [gridApi, rowData, isLoading]);
+        if (gridApi) {
+            const handleResize = () => {
+                setTimeout(() => {
+                    gridApi.sizeColumnsToFit();
+                }, 100);
+            };
 
-    // Handlers for grid events, calling parent callbacks
+            window.addEventListener('resize', handleResize);
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+    }, [gridApi]);
+
     const handleFilterChanged = useCallback((event: FilterChangedEvent<TData>) => {
         if (onFilterChanged) {
-            onFilterChanged(event.api);
+            onFilterChanged(event);
         }
     }, [onFilterChanged]);
 
     const handleSortChanged = useCallback((event: SortChangedEvent<TData>) => {
         if (onSortChanged) {
-            onSortChanged(event.api);
+            onSortChanged(event);
         }
     }, [onSortChanged]);
 
@@ -119,30 +132,31 @@ const AgGridTable = <TData extends {} = any>({ // Default generic type if not pr
         }
     }, [onPaginationChanged]);
 
-    // Grid options object (optional, can pass props directly too)
-    // Useful for combining many settings
-    const gridOptions: GridOptions<TData> = {
-        overlayLoadingTemplate:
-            '<span class="ag-overlay-loading-center">Carregando...</span>',
-        overlayNoRowsTemplate:
-            '<span class="ag-overlay-no-rows-center">Nenhum dado encontrado</span>',
-        // Add other grid options here if needed
-    };
-
+    const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent<TData>) => {
+        console.log("AG Grid First Data Rendered");
+        
+        // Ajusta as colunas para ocupar todo o espaço disponível
+        setTimeout(() => {
+            event.api.sizeColumnsToFit();
+        }, 100);
+        
+        if (onFirstDataRendered) {
+            onFirstDataRendered(event);
+        }
+    }, [onFirstDataRendered]);
 
     return (
-        // Set theme and container height
         <div
             className={`ag-theme-quartz ${styles.agGridContainer}`}
-             // Use autoHeight or set explicit height
-             style={domLayout === 'autoHeight' ? { width: '100%' } : { height: '500px', width: '100%' }}
+            style={domLayout === 'autoHeight' ? { width: '100%' } : { height: '500px', width: '100%' }}
         >
             <AgGridReact<TData>
                 ref={gridRef}
-                rowData={rowData ?? []} // Provide empty array if null/undefined
+                rowData={rowData ?? []}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
-                domLayout={domLayout} // 'autoHeight' adjusts height to fit rows
+                gridOptions={internalGridOptions} // Use combined options
+                domLayout={domLayout}
                 rowHeight={rowHeight}
                 headerHeight={headerHeight}
                 pagination={pagination}
@@ -153,9 +167,7 @@ const AgGridTable = <TData extends {} = any>({ // Default generic type if not pr
                 onFilterChanged={handleFilterChanged}
                 onSortChanged={handleSortChanged}
                 onPaginationChanged={handlePaginationChanged}
-                // enableCellTextSelection={true} // Allow text selection
-                // animateRows={true} // Optional row animation
-                gridOptions={gridOptions} // Pass grid options
+                onFirstDataRendered={handleFirstDataRendered}
             />
         </div>
     );

@@ -8,16 +8,30 @@
      * If using domLayout='autoHeight', AG Grid calculates the height.
      */
     /* height: 600px; */ /* Uncomment and adjust if domLayout is 'normal' */
+    margin-bottom: 20px;
 }
 
-/* Optional: Customize AG Grid theme variables if needed */
-/* .agGridContainer.ag-theme-quartz { */
-    /* --ag-header-background-color: var(--primary-color); */
-    /* --ag-header-foreground-color: white; */
-    /* --ag-font-size: 14px; */
-    /* --ag-row-hover-color: var(--bg-hover); */
-    /* --ag-selected-row-background-color: rgba(52, 152, 219, 0.1); */
-/* } */
+/* Customizações dos temas AG Grid */
+.agGridContainer.ag-theme-quartz {
+    --ag-header-background-color: #f8f9fa;
+    --ag-header-foreground-color: #212529;
+    --ag-font-size: 14px;
+    --ag-row-hover-color: #f1f5f9;
+    --ag-selected-row-background-color: rgba(52, 152, 219, 0.1);
+    --ag-cell-horizontal-padding: 10px;
+    --ag-header-column-separator-display: block;
+    --ag-header-column-separator-color: #ddd;
+    --ag-header-column-separator-height: 80%;
+    --ag-grid-size: 5px;
+}
+
+/* Evita que o texto seja quebrado nas células, principalmente na descrição */
+:global(.ag-cell) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+}
 
 /* Custom styles for overlays */
 :global(.ag-overlay-loading-center) {
@@ -49,4 +63,17 @@
 :global(.ag-cell.cell-saldo-danger) {
     color: var(--danger-dark) !important;
     font-weight: 600 !important;
+}
+
+/* Melhoria nos cabeçalhos e células */
+:global(.ag-header-cell-label) {
+    font-weight: 600;
+}
+
+:global(.ag-row) {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+:global(.ag-row-even) {
+    background-color: #fafbfc;
 }
