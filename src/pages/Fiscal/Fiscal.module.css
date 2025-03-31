@@ -2,428 +2,414 @@
 
 /* Inherit base styles from App.css */
 
+/* --- Page Layout --- */
 .container {
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  
-  .header {
-    margin-bottom: 0;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-color-light);
-    display: flex; /* Added for back button alignment */
-    justify-content: space-between; /* Space between title and button */
-    align-items: center; /* Align vertically */
-  }
-  .header h1 {
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-  }
-  .subtitle {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-  }
-  .titleGroup { /* Group title and subtitle */
-      flex-grow: 1;
-  }
-  
-  .backButton { /* Style for the back button */
-      /* Use standard button styles */
-      margin-left: 20px; /* Space from title */
-  }
-  
-  
-  /* Filters Component Styles */
-  .filtersContainer {
-    background-color: white;
-    padding: 14px 16px;
-    border-radius: var(--container-border-radius);
-    box-shadow: var(--container-shadow);
-    margin-bottom: 0;
-    border: var(--container-border);
-  }
-  
-  .filterRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 16px; /* Row gap, Column gap */
-    margin-bottom: 12px;
-  }
-  
-  .filterGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    flex: 1 1 180px; /* Allow flex-grow, flex-shrink, set basis */
-    min-width: 180px; /* Minimum width */
-  }
-  .filterGroup label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
-  .filterGroup input[type="text"],
-  .filterGroup input[type="date"] {
-      /* Inherit base input styles from App.css */
-      height: 36px; /* Slightly smaller filter inputs */
-      font-size: 0.9rem;
-  }
-  
-  /* Specific filter widths/styles */
-  .customerFilter { flex-basis: 250px; }
-  .statusFilter { flex-basis: 180px; }
-  .invoiceNumberFilter { flex-basis: 200px; }
-  .dateFilter { flex-basis: 160px; }
-  
-  /* Status Dropdown */
-  .dropdownContainer {
-      position: relative;
-      width: 100%;
-  }
-  .dropdownButton {
-      /* Inherit button styles or customize */
-      background-color: white;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 0 12px;
-      height: 36px;
-      width: 100%;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      font-size: 0.9rem;
-  }
-  .dropdownButton:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px var(--primary-light-transparent);
-  }
-  .dropdownButton i {
-      color: var(--text-secondary);
-      transition: transform 0.2s ease;
-  }
-  .dropdownButton i.open {
-      transform: rotate(180deg);
-  }
-  
-  .dropdownMenu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: white;
-      border: 1px solid var(--border-color);
-      border-top: none;
-      border-radius: 0 0 4px 4px;
-      box-shadow: var(--shadow-md);
-      z-index: 100;
-      max-height: 200px;
-      overflow-y: auto;
-      padding: 5px 0;
-  }
-  .dropdownMenu label {
-      display: block;
-      padding: 8px 12px;
-      font-weight: normal;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-  }
-  .dropdownMenu label input[type="checkbox"] {
-      accent-color: var(--primary-color);
-  }
-  .dropdownMenu label:hover {
-      background-color: var(--bg-hover);
-  }
-  
-  
-  .filterActions {
-    display: flex;
-    justify-content: flex-end; /* Align buttons right */
-    gap: 10px;
-    flex-basis: 100%; /* Take full width on wrap */
-    margin-top: 5px; /* Space when wrapping */
-  }
-  
-  /* KPIs Component Styles */
+  padding: 0;
+  height: 100%; /* Ensure container tries to fill viewport height */
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* Space between header, filters, kpis, grid */
+}
+
+.header {
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+.header h1 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.titleGroup { /* Group title and subtitle */
+  flex-grow: 1; /* Allow title group to take space */
+  margin-right: 16px; /* Space before back button */
+}
+
+.backButton { /* Style for the back button */
+  /* Uses .btn .secondary from App.css */
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+
+/* --- Filters Component Styles --- */
+.filtersContainer {
+  background-color: white;
+  padding: 14px 16px;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  margin-bottom: 0;
+  border: var(--container-border);
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px; /* Row gap, Column gap */
+  margin-bottom: 12px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1 1 180px; /* Allow flex-grow, flex-shrink, set basis */
+  min-width: 160px; /* Adjusted minimum width */
+}
+.filterGroup label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+/* Use global styles from App.css for inputs/selects */
+.filterGroup input[type="text"],
+.filterGroup input[type="date"],
+.filterGroup .dropdownButton { /* Style dropdown button like an input */
+  height: 36px;
+  font-size: 0.9rem;
+}
+
+/* Specific filter widths/styles */
+.customerFilter { flex-basis: 250px; }
+.statusFilter { flex-basis: 180px; }
+.invoiceNumberFilter { flex-basis: 200px; }
+.dateFilter { flex-basis: 160px; }
+
+/* Status Dropdown */
+.dropdownContainer {
+  position: relative;
+  width: 100%;
+}
+.dropdownButton {
+  /* Inherit button styles or customize */
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0 12px;
+  /* height: 36px; */ /* Inherited */
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  /* font-size: 0.9rem; */ /* Inherited */
+  box-sizing: border-box;
+  color: var(--text-primary);
+  transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+.dropdownButton:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-light-transparent);
+}
+.dropdownButton span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.dropdownButton i {
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.dropdownButton i.open {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 2px); /* Position below button */
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 5px 0;
+}
+.dropdownMenu label {
+  /* display: block; */ /* Using flex now */
+  padding: 8px 12px;
+  font-weight: normal;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0; /* Override default label margin */
+  color: var(--text-primary); /* Ensure label text color */
+}
+.dropdownMenu label input[type="checkbox"] {
+  accent-color: var(--primary-color);
+  height: 16px; /* Define size */
+  width: 16px;  /* Define size */
+  flex-shrink: 0;
+}
+.dropdownMenu label:hover {
+  background-color: var(--bg-hover);
+}
+
+
+.filterActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-basis: 100%; /* Take full width on wrap */
+  margin-top: 5px; /* Space when wrapping */
+}
+
+
+/* --- KPIs Component Styles --- */
+.kpiContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive cards */
+  gap: 12px;
+  margin-bottom: 0; /* No extra margin below KPIs */
+}
+
+.kpiCard {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: var(--container-border); /* Use standard border */
+  border-left: 3px solid var(--primary-color); /* Highlight border */
+}
+
+.kpiIcon {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  width: 35px;
+  text-align: center;
+  flex-shrink: 0; /* Prevent icon shrinking */
+}
+.kpiLoadingIcon {
+  font-size: 1rem; /* Smaller spinner for KPI card */
+  color: var(--text-secondary);
+}
+
+.kpiContent {
+  flex-grow: 1;
+  overflow: hidden; /* Prevent text overflow */
+}
+
+.kpiTitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kpiValue {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* --- Error State Styling (Page Level) --- */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  background-color: var(--danger-light);
+  border: 1px solid var(--danger-color);
+  color: var(--danger-dark);
+  border-radius: var(--border-radius);
+  margin-bottom: 14px; /* Match gap */
+  min-height: 50px;
+}
+.errorState i {
+  margin-bottom: 8px;
+  font-size: 1.2rem; /* Adjusted size */
+}
+.errorState p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+
+/* --- AG Grid Wrapper --- */
+.gridWrapper {
+  width: 100%;
+  /* Let AG Grid's domLayout='autoHeight' handle height */
+  /* height: 500px; /* Or set a fixed height if needed */
+  border: var(--container-border);
+  border-radius: var(--container-border-radius);
+  overflow: hidden; /* Important for containing AG Grid */
+  box-shadow: var(--container-shadow);
+  background-color: var(--bg-white);
+  flex-grow: 1; /* Allow grid to fill remaining vertical space */
+  display: flex; /* Required for AgGridTable to fill height */
+  flex-direction: column;
+}
+
+
+/* --- Cell Renderer Styles --- */
+
+/* Status Badge Styling (used by StatusCellRenderer) */
+.statusBadge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: white; /* Default text color */
+  text-align: center;
+}
+/* Specific status colors */
+.statusAuthorized { background-color: var(--success-color); }
+.statusCanceled { background-color: var(--danger-color); }
+.statusDenied { background-color: var(--text-secondary); }
+.statusRejected { background-color: #e74c3c; } /* Another red variant */
+.statusSent { background-color: var(--info-color); }
+.statusGenerated { background-color: var(--warning-color); color: #333; }
+.statusUnknown { background-color: #bdc3c7; color: #333; } /* Gray */
+
+/* Actions Cell Styling (used by ActionsCellRenderer) */
+.actionsCell {
+  /* Center content within the cell */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Space between buttons */
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px; /* Clickable area */
+  margin: 0;
+  font-size: 1rem; /* Icon size */
+  color: var(--text-secondary);
+  transition: color 0.2s ease, transform 0.1s ease;
+  border-radius: 4px;
+  line-height: 1; /* Ensure icon is centered vertically */
+  display: inline-flex; /* Align icon */
+  align-items: center;
+  justify-content: center;
+}
+.actionButton:hover:not(:disabled) {
+  color: var(--primary-color);
+  transform: scale(1.1); /* Subtle scale effect */
+}
+.actionButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.copyButton:hover:not(:disabled) { color: var(--accent-color); }
+.danfeButton:hover:not(:disabled) { color: var(--danger-color); }
+.detailsButton:hover:not(:disabled) { color: #27ae60; } /* Example */
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1200px) {
+  .filterGroup { flex-basis: 210px; }
+}
+
+@media (max-width: 992px) {
+  .header { align-items: flex-start; } /* Align header items top */
+  .titleGroup { margin-right: 0; margin-bottom: 8px; } /* Stack title */
+  .backButton { margin-left: 0; }
+  .filterRow { gap: 10px; }
+  .filterGroup { flex-basis: calc(50% - 10px); } /* 2 columns */
+  .dateFilter { flex-basis: calc(50% - 10px); }
+  .filterActions { margin-top: 8px; }
+}
+
+@media (max-width: 768px) {
   .kpiContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive cards */
-    gap: 12px;
-    margin-bottom: 0;
-  }
-  
-  .kpiCard {
-    background-color: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-left: 3px solid var(--primary-color); /* Default border */
-  }
-  
-  .kpiIcon {
-    font-size: 1.6rem;
-    color: var(--primary-color);
-    width: 35px;
-    text-align: center;
-  }
-  .kpiLoadingIcon {
-      font-size: 1rem; /* Smaller spinner for KPI card */
-      color: var(--text-secondary);
-  }
-  
-  .kpiContent {
-    flex-grow: 1;
-  }
-  
-  .kpiTitle {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-bottom: 2px;
-    text-transform: uppercase;
-  }
-  
-  .kpiValue {
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-  
-  
-  /* Invoice List Component Styles */
-  .listContainer {
-    background-color: white;
-    border-radius: var(--container-border-radius);
-    box-shadow: var(--container-shadow);
-    border: var(--container-border);
-    flex-grow: 1; /* Allow list to fill space */
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Prevent inner scrollbar issues */
-  }
-  
-  .tableWrapper {
-    overflow-x: auto; /* Allow horizontal scroll */
-    flex-grow: 1;
-  }
-  
-  .invoiceTable {
-    width: 100%;
-    min-width: 1000px; /* Ensure minimum width before scroll */
-    border-collapse: collapse;
-    font-size: 0.9rem;
-  }
-  
-  .invoiceTable th,
-  .invoiceTable td {
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color-light);
-    white-space: nowrap; /* Prevent wrapping by default */
-  }
-  
-  .invoiceTable th {
-    background-color: var(--primary-color); /* Use primary color for header */
-    color: white;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  .tableHeader { /* Class applied in component */
-      /* Can add specific styles if needed */
-  }
-  .sortableHeader {
-      cursor: pointer;
-  }
-  .sortableHeader:hover {
-      background-color: var(--primary-dark);
-  }
-  .sortableHeader span {
-      margin-right: 5px; /* Space before icon */
-  }
-  .sortIconNeutral { opacity: 0.3; }
-  .sortIconActive { opacity: 0.9; }
-  
-  
-  .numericHeader, .numericCell {
-      text-align: right;
-  }
-  .dateCell {
-      min-width: 100px; /* Give date column enough space */
-  }
-  .currencyCell {
-      font-family: Consolas, monaco, monospace; /* Monospaced for currency */
-  }
-  
-  /* Allow wrapping for longer text fields */
-  .textCell {
-      white-space: normal;
-      max-width: 250px; /* Limit width and allow wrapping */
-      overflow: hidden;
-      text-overflow: ellipsis; /* Add ellipsis if still too long */
-  }
-  .textCell:hover {
-      overflow: visible; /* Show full text on hover if needed */
-      white-space: normal;
-  }
-  
-  
-  .invoiceTable tbody tr:nth-child(even) {
-      background-color: var(--bg-secondary);
-  }
-  .invoiceTable tbody tr:hover {
-    background-color: var(--bg-hover);
-  }
-  
-  /* Status Badge Styles */
-  .statusBadge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    line-height: 1.2;
-    white-space: nowrap;
-    color: white; /* Default text color */
-  }
-  
-  /* Specific status colors */
-  .statusAuthorized { background-color: var(--success-color); }
-  .statusCanceled { background-color: var(--danger-color); }
-  .statusDenied { background-color: var(--text-secondary); }
-  .statusRejected { background-color: #e74c3c; } /* Another red variant */
-  .statusSent { background-color: var(--info-color); }
-  .statusGenerated { background-color: var(--warning-color); color: #333; }
-  .statusUnknown { background-color: #bdc3c7; color: #333; } /* Gray */
-  
-  /* Actions Cell */
-  .actionsCell {
-    text-align: center;
-    min-width: 100px; /* Space for buttons */
-  }
-  .actionButton {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 6px; /* Smaller padding */
-      margin: 0 2px; /* Small gap */
-      font-size: 1rem; /* Icon size */
-      color: var(--text-secondary);
-      transition: color 0.2s ease;
-      border-radius: 4px;
-  }
-  .actionButton:hover:not(:disabled) {
-      color: var(--primary-color);
-      background-color: #e9ecef;
-  }
-  .actionButton:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-  }
-  
-  .copyButton:hover:not(:disabled) { color: var(--accent-color); }
-  .danfeButton:hover:not(:disabled) { color: var(--danger-color); } /* Red for PDF */
-  .detailsButton:hover:not(:disabled) { color: #27ae60; } /* Green for details */
-  
-  
-  /* Table States (Loading, Error, Empty) */
-  .loadingRow td,
-  .errorRow td,
-  .emptyRow td {
-    text-align: center;
-    padding: 40px 20px !important;
-    color: var(--text-secondary);
-    font-size: 1rem;
-  }
-  .loadingRow span,
-  .errorRow span,
-  .emptyRow span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 10px;
   }
-  .errorRow span { color: var(--danger-color); }
-  .spinnerSmall { /* Same as in Users.module.css */
-    width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.1);
-    border-top-color: var(--primary-color); border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  .kpiCard { padding: 10px; gap: 10px; }
+  .kpiIcon { font-size: 1.3rem; width: 24px; }
+  .kpiValue { font-size: 1rem; }
+}
+
+@media (max-width: 576px) {
+  .filterGroup { flex-basis: 100%; } /* 1 column */
+  .kpiContainer {
+      grid-template-columns: 1fr 1fr; /* 2 column on small mobile */
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  
-  
-  /* Pagination */
-  .paginationContainer {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border-color-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--bg-secondary); /* Match actions bar */
-  }
-  
-  .paginationInfo {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  }
-  
-  .paginationControls button {
-    margin-left: 8px;
-    /* Use .btn.small.secondary styles */
-  }
-  
-  
-  /* Responsive */
-  @media (max-width: 1200px) {
-      .filterGroup { flex-basis: 210px; } /* Allow more space */
-  }
-  
-  @media (max-width: 992px) {
-      .filterRow { gap: 10px; }
-      .filterGroup { flex-basis: calc(50% - 10px); } /* 2 columns */
-      .dateFilter { flex-basis: calc(50% - 10px); }
-      .filterActions { margin-top: 8px; }
-  }
-  
-  @media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-bottom: 10px;
-    }
-    .backButton { margin-left: 0; margin-top: 8px; }
-    .kpiContainer {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 10px;
-    }
-    .kpiCard { padding: 10px; gap: 10px; }
-    .kpiIcon { font-size: 1.3rem; width: 24px; }
-    .kpiValue { font-size: 1rem; }
-    .invoiceTable { font-size: 0.85rem; }
-    .invoiceTable th, .invoiceTable td { padding: 6px 8px; }
-    .actionButton { font-size: 0.9rem; padding: 3px 5px; }
-    .paginationContainer { flex-direction: column; gap: 8px; }
-  }
-  
-  @media (max-width: 576px) {
-      .filterGroup { flex-basis: 100%; } /* 1 column */
-      .kpiContainer {
-        grid-template-columns: 1fr 1fr; /* 2 column on small mobile */
-      }
-      .paginationControls { display: flex; justify-content: center; width: 100%; }
-  }
+}
+
+/* Improve AG Grid rendering */
+.gridWrapper ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.gridWrapper ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+.gridWrapper ::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+  border: 2px solid var(--bg-secondary);
+}
+.gridWrapper ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-secondary);
+}
+
+/* Ensure pagination is visible and styled */
+.ag-paging-panel {
+  border-top: 1px solid var(--border-color-light);
+  padding: 8px 10px !important; /* Use !important carefully if needed to override AG Grid */
+  background-color: var(--bg-secondary) !important;
+  font-size: 0.85rem !important;
+}
+.ag-paging-button {
+  color: var(--primary-color) !important;
+  cursor: pointer !important;
+}
+.ag-paging-button[disabled] {
+  color: var(--text-disabled) !important;
+  cursor: not-allowed !important;
+}
+.ag-paging-description, .ag-paging-row-summary-panel span {
+  color: var(--text-secondary) !important;
+}
+.ag-paging-page-summary-panel select {
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius-small) !important;
+  padding: 2px 4px !important;
+  margin: 0 4px !important;
+  height: 26px !important;
+  background-color: white !important;
+}

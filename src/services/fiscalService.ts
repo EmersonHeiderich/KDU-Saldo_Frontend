@@ -111,15 +111,36 @@ export const searchInvoices = async (
 ): Promise<InvoiceSearchResult> => {
     try {
         // Backend expects snake_case, map filters here or in api.ts (handling in api.ts is complex, map here)
-        const apiPayload = {
+        // Processamento adicional para número da NF-e, garantindo que seja enviado como string, mesmos nomes de variáveis do backend
+        // Criamos manualmente o payload para garantir que os tipos de dados estejam corretos
+        // Note que o ERP espera o invoice_number como string e depois converte internamente para invoiceCodeList
+        const apiPayload: any = {
             page,
             pageSize,
-            customer_code_cpf_cnpj: filters.customer, // Backend needs to handle parsing this combined field
-            status: filters.status ? filters.status.join(',') : undefined, // Send as comma-separated string if needed, or handle array in backend
-            invoice_number: filters.invoiceNumber,
-            start_date: filters.startDate ? `${filters.startDate}T00:00:00` : undefined, // Add time part if needed by backend
-            end_date: filters.endDate ? `${filters.endDate}T23:59:59` : undefined,
         };
+        
+        // Adiciona os filtros apenas se estiverem presentes para evitar problemas de null/undefined
+        if (filters.customer) {
+            apiPayload.customer_code_cpf_cnpj = filters.customer;
+        }
+        
+        if (filters.status && filters.status.length > 0) {
+            apiPayload.status = filters.status.join(',');
+        }
+        
+        // Garantir que o número da nota fiscal seja sempre uma string válida
+        if (filters.invoiceNumber) {
+            apiPayload.invoice_number = String(filters.invoiceNumber).trim();
+        }
+        
+        // Datas de emissão formatadas corretamente
+        if (filters.startDate) {
+            apiPayload.start_date = `${filters.startDate}T00:00:00`;
+        }
+        
+        if (filters.endDate) {
+            apiPayload.end_date = `${filters.endDate}T23:59:59`;
+        }
 
         // Remove undefined keys before sending
         Object.keys(apiPayload).forEach(key => apiPayload[key as keyof typeof apiPayload] === undefined && delete apiPayload[key as keyof typeof apiPayload]);

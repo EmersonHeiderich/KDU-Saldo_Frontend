@@ -1,158 +1,368 @@
 // src/pages/Fiscal/Fiscal.tsx
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 // Use frontend interfaces and service functions
 import * as fiscalService from '../../services/fiscalService';
 import { Invoice, InvoiceFilters, InvoiceKPIs, InvoiceSearchResult } from '../../services/fiscalService';
-// Import Components
+
+// Import AG Grid component and types
+import AgGridTable from '../../components/AgGridTable/AgGridTable';
+import {
+    ColDef,
+    GridApi,
+    GridOptions,
+    GridReadyEvent,
+    PaginationChangedEvent,
+    FilterChangedEvent, // To update KPIs on filter change
+    SortChangedEvent // To update KPIs on sort change
+} from 'ag-grid-community';
+
+// Import Page Components
 import FiscalFiltersComponent from './components/FiscalFilters';
 import FiscalKPIsComponent from './components/FiscalKPIs';
-import InvoiceListComponent from './components/InvoiceList';
+import StatusCellRenderer from './components/StatusCellRenderer'; // Import new renderer
+import ActionsCellRenderer from './components/ActionsCellRenderer'; // Import new renderer
+
 // Import CSS
 import styles from './Fiscal.module.css';
 import '../../components/BaseModal/BaseModal.css'; // For potential future modals
-
-type SortField = keyof Invoice | null;
-type SortDirection = 'asc' | 'desc';
 
 const FiscalPage: React.FC = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const gridApiRef = useRef<GridApi<Invoice> | null>(null); // Ref for AG Grid API
 
     // Extract initial filters from navigation state (if coming from Customer Panel)
-    const initialCustomerFilter = location.state?.customerFilter || null; // e.g., { type: 'code' | 'cpf' | 'cnpj', value: '12345' }
+    const initialCustomerFilter = location.state?.customerFilter || null;
 
     // State for filters
     const [filters, setFilters] = useState<InvoiceFilters>(() => {
         const today = new Date().toISOString().split('T')[0];
-        // If coming from customer panel, use that filter, otherwise default to today's date
         return initialCustomerFilter
-            ? { customer: initialCustomerFilter.value, startDate: null, endDate: null, status: null, invoiceNumber: null } // Start with only customer filter
-            : { startDate: today, endDate: today, customer: null, status: null, invoiceNumber: null }; // Default to today
+            ? { customer: initialCustomerFilter.value, startDate: null, endDate: null, status: null, invoiceNumber: null }
+            : { startDate: today, endDate: today, customer: null, status: null, invoiceNumber: null };
     });
 
     // State for data and UI
     const [searchResult, setSearchResult] = useState<InvoiceSearchResult | null>(null);
+    const [invoices, setInvoices] = useState<Invoice[]>([]); // Store current page invoices
     const [kpis, setKpis] = useState<InvoiceKPIs | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [isInitialLoad, setIsInitialLoad] = useState(true); // Track initial automatic load
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const PAGE_SIZE = 50; // Define page size
 
-    // State for sorting
-    const [sortField, setSortField] = useState<SortField>('dataEmissao'); // Default sort
-    const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+    // State for specific loading indicators
+    const [danfeLoading, setDanfeLoading] = useState<string | null>(null); // Store access key being loaded
 
     // --- Permission Check ---
     useEffect(() => {
         const canAccess = user?.permissions.is_admin || user?.permissions.can_access_fiscal;
         if (user && !canAccess) {
-            navigate('/'); // Redirect if no permission
+            navigate('/');
         }
     }, [user, navigate]);
 
     // --- Data Fetching ---
-    const fetchInvoices = useCallback(async (page = 1, currentFilters = filters, currentSortField = sortField, currentSortDirection = sortDirection) => {
+    const fetchInvoices = useCallback(async (page = 1, currentFilters = filters) => {
         if (!user?.permissions.is_admin && !user?.permissions.can_access_fiscal) return;
 
         setIsLoading(true);
         setError(null);
-        // Keep existing data while loading next page? Or clear? Clear for now.
-        // If keeping, only clear on filter change, not page change.
-        // setSearchResult(null); // Optional: clear results while loading
-        // setKpis(null);
 
         try {
-            const result = await fiscalService.searchInvoices(currentFilters, page, 50); // Use default page size from backend config if possible
-
-            // Apply sorting after fetching (as backend sorting might not be implemented yet)
-             const sortedInvoices = sortInvoicesLocally(result.invoices, currentSortField, currentSortDirection);
-             result.invoices = sortedInvoices;
-
-            setSearchResult(result);
-            setCurrentPage(result.currentPage); // Update current page based on response
-
-            // Calculate KPIs based on the *fetched* data for the current page
-            // NOTE: KPIs calculated ONLY on the current page data. Full data KPIs would require fetching all pages.
-            setKpis(fiscalService.calculateInvoiceKPIs(result.invoices));
-
+            const result = await fiscalService.searchInvoices(currentFilters, page, PAGE_SIZE);
+            setInvoices(result.invoices);
+            setCurrentPage(result.currentPage);
+            setTotalPages(result.totalPages);
+            setTotalItems(result.totalItems);
+            // KPIs will be calculated based on grid data after rendering
         } catch (err: any) {
             console.error('Erro ao buscar notas fiscais:', err);
             setError(err.message || 'Erro ao carregar notas fiscais.');
-            setSearchResult(null);
+            setInvoices([]); // Clear data on error
             setKpis(null);
+            setTotalPages(1);
+            setTotalItems(0);
         } finally {
             setIsLoading(false);
-            setIsInitialLoad(false); // Mark initial load as done
         }
-    }, [user, filters, sortField, sortDirection]); // Include dependencies that trigger a refetch
+    }, [user, filters]); // Adjusted dependencies
 
-    // Trigger initial fetch on mount or when initial filters change
+    // Trigger initial fetch on mount or when filters change
     useEffect(() => {
         fetchInvoices(1, filters); // Fetch page 1 with initial filters
-    }, [filters]); // Rerun only if initial filters change (e.g., navigating back)
+    }, [filters, fetchInvoices]); // Added fetchInvoices as dependency
 
+    // ======================================================================
+    // Define Callbacks BEFORE useMemo that uses them
+    // ======================================================================
 
-    // --- Sorting Logic (Client-side) ---
-     const sortInvoicesLocally = (invoicesToSort: Invoice[], field: SortField, direction: SortDirection): Invoice[] => {
-        if (!field) return invoicesToSort;
+    const updateKpisFromGrid = useCallback(() => {
+        if (gridApiRef.current) {
+            let count = 0;
+            let totalValue = 0;
+            let totalQuantity = 0;
 
-        const sorted = [...invoicesToSort].sort((a, b) => {
-            let valA = a[field];
-            let valB = b[field];
+            gridApiRef.current.forEachNodeAfterFilterAndSort(node => {
+                if (node.data) {
+                    count++;
+                    totalValue += node.data.valorTotal ?? 0;
+                    totalQuantity += node.data.quantidadeTotal ?? 0;
+                }
+            });
 
-            // Handle null/undefined for sorting
-            if (valA === null || valA === undefined) valA = direction === 'asc' ? Infinity : -Infinity;
-            if (valB === null || valB === undefined) valB = direction === 'asc' ? Infinity : -Infinity;
+            setKpis({
+                count: count,
+                totalValue: totalValue,
+                averageValue: count > 0 ? totalValue / count : 0,
+                totalQuantity: totalQuantity,
+                averageQuantity: count > 0 ? totalQuantity / count : 0,
+            });
+        } else {
+            setKpis(fiscalService.calculateInvoiceKPIs(invoices));
+        }
+    }, [invoices]); // Dependency on invoices is correct here
 
-            // Specific handling for date sorting
-            if (field === 'dataEmissao' && typeof valA === 'string' && typeof valB === 'string') {
-                 try {
-                    const dateA = new Date(valA).getTime();
-                    const dateB = new Date(valB).getTime();
-                    if (!isNaN(dateA) && !isNaN(dateB)) {
-                        if (dateA < dateB) return direction === 'asc' ? -1 : 1;
-                        if (dateA > dateB) return direction === 'asc' ? 1 : -1;
-                        return 0;
-                    }
-                 } catch { /* Fallback to string comparison if dates are invalid */ }
+    const handlePageChange = useCallback((newPage: number) => {
+       // Added checks for isLoading and totalPages
+       if (!isLoading && newPage >= 1 && newPage <= totalPages) {
+           fetchInvoices(newPage, filters);
+       }
+    }, [isLoading, totalPages, filters, fetchInvoices]); // Dependencies look okay
+
+    const handleCopyKey = useCallback((accessKey: string) => {
+        navigator.clipboard.writeText(accessKey)
+            .then(() => {
+                alert('Chave de acesso copiada!'); // Replace with a better notification
+            })
+            .catch(err => {
+                console.error('Falha ao copiar chave de acesso:', err);
+                alert('Não foi possível copiar a chave.');
+            });
+    }, []); // No dependencies needed
+
+    const handleGenerateDanfe = useCallback(async (accessKey: string) => {
+        setDanfeLoading(accessKey);
+        setError(null);
+        try {
+            const pdfBlob = await fiscalService.getDanfePdfBlob(accessKey);
+            const url = window.URL.createObjectURL(pdfBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error: any) {
+            console.error('Erro ao gerar DANFE:', error);
+            setError(`Erro ao gerar DANFE: ${error.message || 'Erro desconhecido'}`);
+            setTimeout(() => setError(null), 7000);
+        } finally {
+            setDanfeLoading(null);
+        }
+    }, []); // No dependencies needed
+
+    // ======================================================================
+    // AG Grid Configuration (Now uses callbacks defined above)
+    // ======================================================================
+
+    const columnDefs = useMemo<ColDef<Invoice>[]>(() => [
+        {
+            headerName: 'Status',
+            field: 'status',
+            cellRenderer: StatusCellRenderer,
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                values: fiscalService.STATUS_OPTIONS.map(opt => opt.value),
+                valueFormatter: (params: {value: string}) => fiscalService.STATUS_OPTIONS.find(opt => opt.value === params.value)?.label || params.value,
+            },
+            sortable: true,
+            width: 120,
+            maxWidth: 130,
+            resizable: false,
+            cellStyle: { 
+                textAlign: 'center', 
+                paddingTop: '7px', 
+                paddingBottom: '7px' 
+            } as any,
+        },
+        {
+            headerName: 'Destinatário',
+            field: 'destinatario',
+            filter: 'agTextColumnFilter',
+            tooltipField: 'destinatario',
+            sortable: true,
+            flex: 2,
+            minWidth: 200,
+        },
+        {
+            headerName: 'Ped. Venda',
+            field: 'pedidoVenda',
+            filter: 'agNumberColumnFilter',
+            sortable: true,
+            width: 120,
+            type: 'numericColumn',
+        },
+        {
+            headerName: 'Num. NF',
+            field: 'numeroNota',
+            filter: 'agNumberColumnFilter',
+            sortable: true,
+            width: 110,
+            type: 'numericColumn',
+        },
+        {
+            headerName: 'Série',
+            field: 'serieNota',
+            filter: 'agTextColumnFilter',
+            sortable: true,
+            width: 70,
+            type: 'numericColumn',
+        },
+        {
+            headerName: 'Emissão',
+            field: 'dataEmissao',
+            valueFormatter: (params) => fiscalService.formatDate(params.value),
+            filter: 'agDateColumnFilter',
+            filterParams: {
+                 comparator: (filterLocalDateAtMidnight: Date, cellValue: string) => {
+                     if (!cellValue) return -1;
+                     const cellDate = new Date(cellValue);
+                      // Handle invalid date strings from API gracefully
+                     if (isNaN(cellDate.getTime())) return -1;
+                     // Compare dates only, ignoring time
+                     const cellDateMidnight = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+
+                     if (cellDateMidnight < filterLocalDateAtMidnight) return -1;
+                     if (cellDateMidnight > filterLocalDateAtMidnight) return 1;
+                     return 0;
+                 },
+                 browserDatePicker: true, // Use browser's date picker in filter
+                 buttons: ['apply', 'reset'],
+                 debounceMs: 200,
+            },
+            sortable: true,
+            width: 110,
+        },
+        {
+            headerName: 'Valor Total',
+            field: 'valorTotal',
+            valueFormatter: (params) => fiscalService.formatCurrency(params.value),
+            filter: 'agNumberColumnFilter',
+            sortable: true,
+            width: 130,
+            type: 'numericColumn',
+            cellStyle: { fontWeight: 500 } as any
+        },
+        {
+            headerName: 'Qtde. Itens',
+            field: 'quantidadeTotal',
+            valueFormatter: (params) => fiscalService.formatNumber(params.value),
+            filter: 'agNumberColumnFilter',
+            sortable: true,
+            width: 110,
+            type: 'numericColumn',
+        },
+        {
+            headerName: 'Operação',
+            field: 'operacao',
+            filter: 'agTextColumnFilter',
+            sortable: true,
+            tooltipField: 'operacao',
+            flex: 1,
+            minWidth: 150,
+        },
+        {
+            headerName: 'Transportadora',
+            field: 'transportadora',
+            filter: 'agTextColumnFilter',
+            sortable: true,
+            tooltipField: 'transportadora',
+            flex: 1,
+            minWidth: 150,
+        },
+        {
+            headerName: 'Ações',
+            colId: 'actions',
+            cellRenderer: ActionsCellRenderer,
+            filter: false,
+            sortable: false,
+            resizable: false,
+            width: 100,
+            minWidth: 100,
+            maxWidth: 100,
+            cellStyle: { 
+                padding: '0', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+            } as any,
+            pinned: 'right',
+            lockPinned: true,
+        },
+    ], []); // Dependencies remain empty
+
+    const defaultColDef = useMemo<ColDef>(() => ({
+        resizable: true,
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        suppressMenu: false,
+        minWidth: 80,
+    }), []);
+
+     // Define gridOptions separately to pass context
+    const gridOptions = useMemo<GridOptions<Invoice>>(() => ({
+        context: {
+            // Pass handlers needed by cell renderers
+            handleCopyKey: handleCopyKey, // Pass the memoized function directly
+            handleGenerateDanfe: handleGenerateDanfe, // Pass the memoized function directly
+        },
+        pagination: true,
+        paginationPageSize: PAGE_SIZE,
+        suppressPaginationPanel: false,
+        suppressRowClickSelection: true,
+        animateRows: true,
+        onPaginationChanged: (event: PaginationChangedEvent) => {
+            // Check if the change was triggered by the API call itself or user interaction
+            const newPageNumber = event.api.paginationGetCurrentPage() + 1;
+            if (event.newPage && newPageNumber !== currentPage) {
+                handlePageChange(newPageNumber); // Correctly reference memoized function
             }
+        },
+        rowHeight: 42,
+        headerHeight: 40,
+        floatingFiltersHeight: 35,
+         // Optional: Handle DANFE loading state visually (e.g., disable action button)
+         // This requires passing the `danfeLoading` state to the context or renderer
+         // For simplicity, keeping it as is for now. A visual cue on the button itself might be better.
 
-            // Default comparison (numeric or string)
-            if (typeof valA === 'number' && typeof valB === 'number') {
-                if (valA < valB) return direction === 'asc' ? -1 : 1;
-                if (valA > valB) return direction === 'asc' ? 1 : -1;
-            } else {
-                 const strA = String(valA).toLowerCase();
-                 const strB = String(valB).toLowerCase();
-                 if (strA < strB) return direction === 'asc' ? -1 : 1;
-                 if (strA > strB) return direction === 'asc' ? 1 : -1;
-            }
-
-            // Secondary sort by invoice number if primary values are equal
-            const numA = a.numeroNota ?? 0;
-            const numB = b.numeroNota ?? 0;
-            if (numA < numB) return -1;
-            if (numA > numB) return 1;
-
-            return 0;
-        });
-        return sorted;
-    };
+    }), [currentPage, handleCopyKey, handleGenerateDanfe, handlePageChange]); // Include memoized functions in dependency array
 
 
-    // --- Handlers ---
+    // AG Grid API Ready Callback
+    const onGridReady = useCallback((params: GridReadyEvent<Invoice>) => {
+        gridApiRef.current = params.api;
+        // KPIs will be updated by onFirstDataRendered in gridOptions
+    }, []); // No dependencies needed
+
+
+    // --- Other Handlers ---
     const handleSearch = (newFilters: InvoiceFilters) => {
-        setFilters(newFilters); // Update filters state
-        setCurrentPage(1); // Reset to page 1 on new search
+        setFilters(newFilters);
+        setCurrentPage(1);
         // fetchInvoices will be triggered by the useEffect watching 'filters'
     };
 
     const handleClearFilters = () => {
-         // Reset to default filters (today's date, unless coming from customer panel)
          const today = new Date().toISOString().split('T')[0];
          const defaultFilters = initialCustomerFilter
              ? { customer: initialCustomerFilter.value, startDate: null, endDate: null, status: null, invoiceNumber: null }
@@ -162,72 +372,11 @@ const FiscalPage: React.FC = () => {
         // fetchInvoices will be triggered by the useEffect watching 'filters'
     };
 
-     const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= (searchResult?.totalPages || 1) && !isLoading) {
-            setCurrentPage(newPage);
-            fetchInvoices(newPage, filters, sortField, sortDirection); // Fetch the requested page
-        }
-    };
-
-    const handleSort = (field: keyof Invoice) => {
-         const newDirection = (field === sortField && sortDirection === 'asc') ? 'desc' : 'asc';
-         setSortField(field);
-         setSortDirection(newDirection);
-         // Re-sort existing data or re-fetch? Re-sorting existing page data is faster
-         if (searchResult) {
-             const sortedInvoices = sortInvoicesLocally(searchResult.invoices, field, newDirection);
-             setSearchResult({ ...searchResult, invoices: sortedInvoices });
-         }
-         // If backend sorting is implemented, trigger a refetch instead:
-         // fetchInvoices(currentPage, filters, field, newDirection);
-    };
-
-
-    const handleCopyKey = (accessKey: string) => {
-        navigator.clipboard.writeText(accessKey)
-            .then(() => {
-                alert('Chave de acesso copiada para a área de transferência!'); // Replace with a toast notification later
-            })
-            .catch(err => {
-                console.error('Falha ao copiar chave de acesso:', err);
-                alert('Não foi possível copiar a chave de acesso.');
-            });
-    };
-
-    const handleGenerateDanfe = async (accessKey: string) => {
-        // Add a loading indicator specifically for DANFE generation?
-        const originalButtonText = 'Gerando DANFE...'; // Example, maybe target the specific button
-        try {
-            const pdfBlob = await fiscalService.getDanfePdfBlob(accessKey);
-            const url = window.URL.createObjectURL(pdfBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `DANFE_${accessKey}.pdf`); // or target="_blank"
-            link.target = '_blank'; // Open in new tab is usually preferred
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        } catch (error: any) {
-            console.error('Erro ao gerar DANFE:', error);
-            setError(`Erro ao gerar DANFE: ${error.message || 'Erro desconhecido'}`);
-            // Hide error after a delay?
-            setTimeout(() => setError(null), 5000);
-        } finally {
-            // Reset button text/state if needed
-        }
-    };
-
-    const handleViewDetails = (invoice: Invoice) => {
-        // Placeholder for future implementation
-        alert(`Detalhes da Nota Fiscal ${invoice.numeroNota} (Em breve)`);
-    };
-
     const handleGoBack = () => {
-        navigate(-1); // Go back to the previous page (e.g., Customer Panel)
+        navigate(-1);
     };
 
-
+    // --- JSX ---
     return (
         <div className={styles.container}>
              <header className={styles.header}>
@@ -235,7 +384,6 @@ const FiscalPage: React.FC = () => {
                     <h1>Módulo Fiscal</h1>
                     <p className={styles.subtitle}>Consulta de Notas Fiscais Emitidas</p>
                 </div>
-                {/* Conditionally render Back button if navigated from Customer Panel */}
                 {initialCustomerFilter && (
                     <button onClick={handleGoBack} className={`btn secondary ${styles.backButton}`}>
                         <i className="fas fa-arrow-left"></i> Voltar ao Painel
@@ -244,51 +392,52 @@ const FiscalPage: React.FC = () => {
             </header>
 
             <FiscalFiltersComponent
-                initialFilters={filters} // Pass current filters as initial state for controlled component
+                initialFilters={filters}
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
                 isLoading={isLoading}
-                disableCustomerFilter={!!initialCustomerFilter} // Disable if customer was passed
+                disableCustomerFilter={!!initialCustomerFilter}
             />
 
-            <FiscalKPIsComponent kpis={kpis} isLoading={isLoading && !searchResult} />
+            <FiscalKPIsComponent kpis={kpis} isLoading={isLoading && !invoices.length} />
 
-            <InvoiceListComponent
-                invoices={searchResult?.invoices || []}
-                isLoading={isLoading}
-                error={error}
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={handleSort}
-                onCopyKey={handleCopyKey}
-                onGenerateDanfe={handleGenerateDanfe}
-                onViewDetails={handleViewDetails}
-            />
-
-            {/* Pagination */}
-            {searchResult && searchResult.totalPages > 1 && !isLoading && (
-                <div className={styles.paginationContainer}>
-                    <span className={styles.paginationInfo}>
-                        Página {searchResult.currentPage} de {searchResult.totalPages} ({searchResult.totalItems} itens)
-                    </span>
-                    <div className={styles.paginationControls}>
-                        <button
-                            className="btn secondary small icon-only"
-                            onClick={() => handlePageChange(searchResult.currentPage - 1)}
-                            disabled={searchResult.currentPage <= 1 || isLoading}
-                        >
-                            <i className="fas fa-chevron-left"></i>
-                        </button>
-                        <button
-                            className="btn secondary small icon-only"
-                            onClick={() => handlePageChange(searchResult.currentPage + 1)}
-                            disabled={searchResult.currentPage >= searchResult.totalPages || isLoading}
-                        >
-                             <i className="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
+             {/* Error Display Area */}
+             {error && !isLoading && (
+                <div className={styles.errorState} style={{minHeight: '50px', padding: '10px', marginBottom: '14px'}}>
+                    <i className="fas fa-exclamation-triangle"></i>
+                    <p>{error}</p>
                 </div>
             )}
+
+            {/* AG Grid Table Wrapper */}
+            <div className={`ag-theme-quartz ${styles.gridWrapper}`} style={{ flexGrow: 1, width: '100%' }}>
+                <AgGridTable<Invoice>
+                    gridId="fiscalInvoicesTable"
+                    rowData={invoices}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    gridOptions={gridOptions}
+                    isLoading={isLoading}
+                    onGridReadyCallback={(api) => {
+                        gridApiRef.current = api;
+                        // KPIs will be updated by onFirstDataRendered
+                    }}
+                    pagination={true}
+                    paginationPageSize={PAGE_SIZE}
+                    onFilterChanged={() => updateKpisFromGrid()}
+                    onSortChanged={() => updateKpisFromGrid()}
+                    onFirstDataRendered={() => updateKpisFromGrid()}
+                    onPaginationChanged={(event) => {
+                        updateKpisFromGrid();
+                        if (gridOptions.onPaginationChanged) {
+                            gridOptions.onPaginationChanged(event);
+                        }
+                    }}
+                    // Let AG Grid handle pagination UI based on fetched data
+                    // paginationTotalRows={totalItems} // Total rows from backend (Optional: useful if backend provides it)
+                    // AG Grid will calculate total pages based on totalRows / pageSize
+                />
+            </div>
         </div>
     );
 };

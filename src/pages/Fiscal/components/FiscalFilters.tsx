@@ -50,8 +50,13 @@ const FiscalFiltersComponent: React.FC<FiscalFiltersProps> = ({
         );
     };
 
-    const handleInvoiceNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setInvoiceNumber(e.target.value);
+const handleInvoiceNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
+        // Garantir que o valor seja tratado como string (não convertido para número)
+        // Aceita números, vírgulas e hífens (para rangos) - Padrões comuns: "123", "123,124,125", "100-200"
+        const value = e.target.value;
+        // Opcionalmente, você pode adicionar uma validação para permitir apenas certos caracteres
+        // Na implementação atual estamos permitindo todos os caracteres, pois o backend fará a validação
+        setInvoiceNumber(value);
     };
 
     const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
