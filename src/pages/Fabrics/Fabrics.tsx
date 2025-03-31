@@ -377,14 +377,15 @@ const Fabrics: React.FC = () => {
             {(!error || initialLoadDone) && (
                 <div className={styles.gridWrapper}>
                     <AgGridTable<Fabric>
+                        gridId="fabricsTable" // <-- PROVIDE UNIQUE ID HERE
                         rowData={allFabrics}
                         columnDefs={columnDefs}
-                        defaultColDef={defaultColDef} // This now includes floatingFilter: true
+                        defaultColDef={defaultColDef}
                         gridOptions={gridOptions}
                         pagination={true}
                         paginationPageSize={50}
                         paginationPageSizeSelector={[25, 50, 100, 200]}
-                        domLayout='autoHeight'
+                        domLayout='autoHeight' // Make sure this matches your desired layout
                         isLoading={loading}
                         onGridReadyCallback={onGridReady}
                         onFilterChanged={handleGridFilterOrSortChanged}

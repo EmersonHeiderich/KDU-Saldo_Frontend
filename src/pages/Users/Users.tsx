@@ -345,14 +345,17 @@ const Users: React.FC = () => {
             {/* Ensure wrapper has theme class and takes space */}
             <div className={`ag-theme-quartz ${styles.gridWrapper}`} style={{ flexGrow: 1, width: '100%' }}>
                 <AgGridTable<User>
+                    gridId="usersTable" // ID único para salvar estado da grid
                     rowData={users} // Pass the full user list
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
                     gridOptions={gridOptions} // Pass context via gridOptions
-                    // quickFilterText={searchText} // No longer needed, using gridApiRef.current?.setQuickFilter
                     isLoading={loading} // Pass loading state
                     onGridReadyCallback={onGridReady}
-                    // Pass other AG Grid props as needed
+                    pagination={true}
+                    paginationPageSize={20}
+                    paginationPageSizeSelector={[10, 20, 50, 100]}
+                    domLayout="autoHeight"
                 />
             </div>
 

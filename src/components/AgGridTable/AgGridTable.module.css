@@ -2,13 +2,9 @@
 
 .agGridContainer {
     width: 100%;
-    /*
-     * If using domLayout='normal', you MUST provide a height.
-     * Example: height: 600px;
-     * If using domLayout='autoHeight', AG Grid calculates the height.
-     */
-    /* height: 600px; */ /* Uncomment and adjust if domLayout is 'normal' */
-    margin-bottom: 20px;
+    /* Provide a default height if domLayout is 'normal' */
+    /* height: 600px; */
+    margin-bottom: 0; /* Remove default bottom margin if actions container is added above */
 }
 
 /* Customizações dos temas AG Grid */
@@ -23,14 +19,39 @@
     --ag-header-column-separator-color: #ddd;
     --ag-header-column-separator-height: 80%;
     --ag-grid-size: 5px;
+    --ag-borders: none; /* Remove default grid borders */
+    --ag-header-cell-hover-background-color: #e9ecef;
+    --ag-header-cell-moving-background-color: #d0d6de;
 }
 
-/* Evita que o texto seja quebrado nas células, principalmente na descrição */
+/* --- Global Overrides & Cell Styling --- */
+
+/* Prevent text wrapping in cells by default */
 :global(.ag-cell) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.5;
+    line-height: 1.5; /* Default line-height */
+    /* Dynamic padding based on line-height to center text vertically */
+    padding-top: calc((var(--ag-line-height, 1.5) * 1em - 1em) / 2);
+    padding-bottom: calc((var(--ag-line-height, 1.5) * 1em - 1em) / 2);
+    border-bottom: 1px solid var(--border-color-light); /* Add subtle bottom border */
+}
+:global(.ag-header-cell-label) {
+    font-weight: 600;
+}
+:global(.ag-row) {
+    border-bottom: none; /* Remove default AG Grid row border if using cell borders */
+}
+:global(.ag-row-even) {
+    background-color: var(--bg-secondary); /* Subtle alternating row color */
+}
+:global(.ag-row-odd) {
+    background-color: var(--bg-white);
+}
+/* Remove last cell border */
+:global(.ag-cell:last-child) {
+    border-right: none;
 }
 
 /* Custom styles for overlays */
@@ -65,15 +86,128 @@
     font-weight: 600 !important;
 }
 
-/* Melhoria nos cabeçalhos e células */
-:global(.ag-header-cell-label) {
-    font-weight: 600;
+/* --- Grid Actions Container (Gear Button) --- */
+.gridActionsContainer {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    top: 10px;
+    right: 10px; 
+    z-index: 5; /* Para ficar acima da grid */
+    margin-bottom: 0;
 }
 
-:global(.ag-row) {
-    border-bottom: 1px solid #f0f0f0;
+.gearButtonContainer {
+    position: relative; /* Anchor for the dropdown */
 }
 
-:global(.ag-row-even) {
-    background-color: #fafbfc;
+.gearButton {
+    /* Design redondo mantendo as cores do tema secundário do projeto */
+    border-radius: 50% !important;
+    width: 36px;
+    height: 36px;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    /* Usando as cores secundárias do projeto */
+    background-color: var(--text-secondary) !important;
+    border-color: var(--text-secondary) !important;
+    color: var(--text-light) !important;
+    transition: all 0.2s ease;
+}
+
+.gearButton:hover {
+    transform: rotate(15deg);
+    background-color: #5a6268 !important; 
+    border-color: #545b62 !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.agGridContainer {
+    position: relative; /* Para posicionar o botão de engrenagem em relação à grid */
+}
+
+/* --- Custom Column Configuration Menu --- */
+.columnMenuDropdown {
+    position: absolute;
+    top: 100%; /* Position below the gear button */
+    right: 0; /* Align to the right */
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    z-index: 1050; /* Ensure it's above grid content */
+    min-width: 220px; /* Increased min-width slightly */
+    max-width: 300px;
+    overflow: hidden; /* Clip content */
+    font-size: 0.85rem; /* Base font size for menu */
+}
+
+.columnMenuList {
+    list-style: none;
+    padding: 6px 0; /* Add some vertical padding */
+    margin: 0;
+    max-height: 350px; /* Increased max-height slightly */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.columnMenuList li {
+    padding: 0;
+}
+
+.columnMenuList label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between checkbox and text */
+    padding: 7px 14px; /* Consistent padding */
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+    white-space: nowrap;
+    color: var(--text-primary);
+}
+.columnMenuList label:hover {
+    background-color: var(--bg-hover);
+}
+
+.columnMenuList input[type="checkbox"] {
+    margin: 0; /* Reset margin */
+    cursor: pointer;
+    height: 15px; /* Slightly larger checkbox */
+    width: 15px;
+    flex-shrink: 0;
+    accent-color: var(--primary-color);
+}
+.columnMenuList input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+/* Style the label when its checkbox is disabled */
+.columnMenuList input[type="checkbox"]:disabled + span {
+    color: var(--text-disabled);
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+
+.columnMenuList span {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Handle long column names */
+}
+
+.columnMenuFooter {
+    padding: 10px 14px; /* Increased padding slightly */
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color-light);
+    text-align: right;
+}
+.columnMenuFooter button {
+    /* Uses .btn .secondary .small from App.css */
+}
+.columnMenuFooter button i {
+    margin-right: 4px;
+    font-size: 0.8em;
 }
