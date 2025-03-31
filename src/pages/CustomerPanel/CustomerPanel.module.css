@@ -1,153 +1,154 @@
 /* src/pages/CustomerPanel/CustomerPanel.module.css */
 
 .container {
-  padding: 20px;
+  padding: 0;
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .header {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color-light);
 }
 
 .header h1 {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 5px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 }
 
 /* Search Controls */
 .controlsContainer {
   background-color: white;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px;
+  padding: 14px 16px;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
+  margin-bottom: 0;
 }
 
 .controls {
   display: flex;
-  gap: 15px;
-  align-items: flex-end; /* Align items bottom */
+  gap: 12px;
+  align-items: flex-end;
   flex-wrap: wrap;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Allow input to grow */
-  min-width: 200px; /* Minimum width */
+  flex-grow: 1;
+  min-width: 200px;
+  gap: 4px;
 }
 
 .inputGroup label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--text-secondary);
-  margin-bottom: 5px;
 }
 
-.inputGroup input[type="text"] { /* Be specific */
-  padding: 8px 12px;
+.inputGroup input[type="text"] {
+  padding: 6px 10px;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  height: 38px;
-  font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: var(--border-radius-small);
+  height: 34px;
+  font-size: 0.9rem;
+  transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 .inputGroup input[type="text"]:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .checkboxGroup {
   display: flex;
   align-items: center;
-  gap: 15px; /* Increased gap */
-  padding-bottom: 2px; /* Align baseline with button/input */
+  gap: 12px;
+  padding-bottom: 2px;
 }
 
 .checkboxGroup label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.9rem; /* Match input label */
+  font-size: 0.85rem;
   color: var(--text-secondary);
   cursor: pointer;
 }
-.checkboxGroup input[type="radio"] { /* Style radio */
-    margin-right: 5px;
-    cursor: pointer;
-    /* Optional: Custom radio style */
-    accent-color: var(--primary-color);
+.checkboxGroup input[type="radio"] {
+  margin-right: 4px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
 }
 
 .actionButtons {
   display: flex;
-  gap: 10px;
-  align-items: flex-end; /* Align with other controls */
+  gap: 8px;
+  align-items: flex-end;
 }
 
-/* Use base button styles defined in App.css or index.css */
 .searchButton {
-    height: 38px; /* Match input height */
+  height: 34px;
 }
 .helpButton {
-    height: 38px; /* Match input height */
-    width: 38px;
-    padding: 0; /* Remove padding for icon only */
+  height: 34px;
+  width: 34px;
+  padding: 0;
 }
 .helpButton i {
-    margin: 0; /* Remove margin for icon only */
+  margin: 0;
 }
-
 
 .errorMessage {
   color: var(--danger-color);
-  font-size: 0.85rem;
-  margin-top: 5px;
-  /* Position relative to input group if needed */
+  font-size: 0.75rem;
+  margin-top: 4px;
 }
 
 /* Main Content Area */
 .mainContent {
-  margin-top: 0; /* Remove top margin */
+  margin-top: 0;
   flex-grow: 1;
-  overflow-y: auto; /* Allow content scroll if needed */
+  overflow-y: auto;
 }
 
 /* State Messages */
 .loadingState,
 .errorState,
 .initialState,
-.noDataState { /* Shared styles for state indicators */
+.noDataState {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 30px 16px;
   text-align: center;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border: 1px dashed var(--border-color);
-  margin: 20px 0;
-  min-height: 200px;
+  background-color: white;
+  border-radius: var(--container-border-radius);
+  border: var(--container-border);
+  box-shadow: var(--container-shadow);
+  margin: 0;
+  min-height: 180px;
   color: var(--text-secondary);
 }
 .loadingState i,
 .errorState i,
 .initialState i,
 .noDataState i {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
+  font-size: 2.2rem;
+  margin-bottom: 12px;
   opacity: 0.7;
 }
 .errorState i { color: var(--danger-color); opacity: 1; }
@@ -158,255 +159,243 @@
 .errorState p,
 .initialState p,
 .noDataState p {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 /* Customer Display Container */
 .customerContainer {
   display: grid;
-  grid-template-columns: 1fr; /* Default to 1 column */
-  gap: 25px; /* Increased gap */
-  margin-top: 20px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 0;
 }
-@media (min-width: 992px) { /* Apply 2 columns on larger screens */
+@media (min-width: 992px) {
   .customerContainer {
-    grid-template-columns: 1fr 1fr; /* 2 equal columns */
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-
 /* Common styles for data/stats containers */
 .customerDataContainer,
-.statisticsContainer { /* Added class for stats */
+.statisticsContainer {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  padding: 20px 25px; /* Adjusted padding */
-  border: 1px solid var(--border-color);
-  /* Height considerations? Maybe allow natural height */
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  padding: 16px;
+  border: var(--container-border);
 }
 
 /* KPIs Container */
 .kpiContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive KPI cards */
-  gap: 15px;
-  margin-bottom: 25px; /* Space below KPIs */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .kpiCard {
   background-color: white;
-  border-radius: 6px; /* Slightly less rounded */
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-  padding: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  padding: 12px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  border-left: 4px solid var(--primary-color); /* Default border color */
+  gap: 12px;
+  border-left: 3px solid var(--primary-color);
   transition: box-shadow 0.2s ease;
 }
 .kpiCard:hover {
-   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .kpiIcon {
-  font-size: 1.8rem; /* Adjusted size */
-  color: var(--primary-color); /* Default icon color */
-  width: 40px; /* Fixed size */
-  height: 40px;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  width: 35px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* Prevent icon shrinking */
-  /* background-color: #f0f0f0; Optional background */
-  /* border-radius: 50%; */
+  flex-shrink: 0;
 }
 
 .kpiContent {
   flex-grow: 1;
-  overflow: hidden; /* Prevent text overflow issues */
+  overflow: hidden;
 }
 
 .kpiTitle {
-  font-size: 0.85rem; /* Smaller title */
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Add ellipsis if title is too long */
+  text-overflow: ellipsis;
 }
 
 .kpiValue {
-  font-size: 1.3rem; /* Larger value */
+  font-size: 1.2rem;
   font-weight: 600;
-  line-height: 1.2; /* Adjust line height */
+  line-height: 1.2;
 }
 
 /* Info Section Styling */
 .infoSection {
-  margin-bottom: 25px; /* Space between sections */
+  margin-bottom: 20px;
 }
 .infoSection:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .infoSection h3 {
-  font-size: 1.15rem; /* Slightly smaller section headers */
-  margin-bottom: 15px;
-  color: var(--primary-color);
-  border-bottom: 1px solid #eee; /* Lighter separator */
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color-light);
   padding-bottom: 8px;
-  display: flex; /* Align icon with text */
+  display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 500;
 }
 .infoSection h3 i {
-    font-size: 1em; /* Match text size */
-    opacity: 0.9;
+  font-size: 1em;
+  opacity: 0.9;
+  color: var(--primary-color);
 }
 
-
-.infoSection h4 { /* Sub-headers like Telefones/Emails */
-  font-size: 1rem;
-  margin-top: 15px; /* Space above sub-header */
-  margin-bottom: 10px;
+.infoSection h4 {
+  font-size: 0.95rem;
+  margin-top: 12px;
+  margin-bottom: 8px;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .infoGrid {
   display: grid;
-  grid-template-columns: 1fr; /* Default 1 column */
-  gap: 10px 15px; /* Row gap, Column gap */
+  grid-template-columns: 1fr;
+  gap: 8px 14px;
 }
-@media (min-width: 576px) { /* Use 2 columns on slightly larger screens */
-    .infoGrid {
-        grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
-    }
-}
-
-
-.infoItem {
-  /* margin-bottom: 10px; Removed, using grid gap */
+@media (min-width: 576px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .infoItem .label {
-  font-size: 0.85rem; /* Smaller label */
-  color: #777; /* Lighter secondary */
-  margin-bottom: 3px;
-  display: block; /* Ensure label is block */
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  display: block;
 }
 
 .infoItem .value {
-  font-size: 0.95rem; /* Slightly smaller value */
+  font-size: 0.9rem;
   font-weight: 500;
-  word-break: break-word; /* Allow long values to wrap */
+  word-break: break-word;
 }
 
-.noInfo { /* Style for 'no data' messages within sections */
-    font-style: italic;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    padding: 5px 0;
+.noInfo {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding: 4px 0;
 }
-
 
 /* Contact List Styling */
 .contactSubSection {
-    margin-top: 15px;
+  margin-top: 12px;
 }
 .contactList {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .contactItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
 }
 .contactItem i {
-    color: var(--text-secondary);
-    width: 16px; /* Align icons */
-    text-align: center;
+  color: var(--text-secondary);
+  width: 16px;
+  text-align: center;
 }
 .contactType {
-    color: #777;
-    font-size: 0.8rem;
-    margin-left: 5px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-left: 4px;
 }
 .defaultBadge {
-    font-size: 0.75rem;
-    background-color: var(--accent-color);
-    color: white;
-    padding: 1px 5px;
-    border-radius: 3px;
-    margin-left: auto; /* Push badge to the right */
+  font-size: 0.7rem;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: auto;
 }
-
 
 /* Status & Tags */
 .statusActive, .statusInactive {
   font-weight: 600;
   padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  display: inline-block; /* Allow padding/background */
+  border-radius: var(--border-radius-small);
+  font-size: 0.8rem;
+  display: inline-block;
 }
-.statusActive { color: #1e8e5b; background-color: #eaf7f1; } /* Use background color */
-.statusInactive { color: #b83b3b; background-color: #fdeded; }
+.statusActive { color: var(--success-dark); background-color: var(--success-light); }
+.statusInactive { color: var(--danger-dark); background-color: var(--danger-light); }
 
 .tagSection {
-    margin-top: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .tag {
-    font-size: 0.8rem;
-    padding: 3px 8px;
-    border-radius: 12px; /* Pill shape */
-    font-weight: 500;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 500;
 }
 .tagCustomer { background-color: #e1f5fe; color: #01579b; }
 .tagSupplier { background-color: #fff8e1; color: #ff6f00; }
 .tagEmployee { background-color: #f3e5f5; color: #4a148c; }
 .tagRepresentative { background-color: #e0f2f1; color: #004d40; }
 
-
 /* Future Actions */
 .futureActions {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  padding: 15px 20px;
-  margin-top: 25px;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  padding: 12px 16px;
+  margin-top: 0;
   display: flex;
-  flex-wrap: wrap; /* Allow buttons to wrap */
+  flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-  border: 1px solid var(--border-color);
+  border: var(--container-border);
 }
 
 .futureActions h3 {
-  margin-right: 15px;
-  margin-bottom: 0; /* Remove bottom margin */
-  color: var(--primary-color);
-  font-size: 1rem; /* Smaller header */
-  font-weight: 600;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  margin-right: 12px;
+  margin-bottom: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
 .futureActions button {
-  margin-bottom: 0; /* Remove default button margin if any */
-  /* Use base btn styles + secondary */
+  margin-bottom: 0;
 }
 .futureActions button:disabled {
-    opacity: 0.7; /* Make disabled more obvious */
-    cursor: not-allowed;
+  opacity: 0.65;
+  cursor: not-allowed;
 }
-
 
 /* Responsiveness */
 @media (max-width: 768px) {
@@ -415,27 +404,39 @@
     align-items: stretch;
   }
   .inputGroup {
-      min-width: unset; /* Remove min-width */
+    min-width: unset;
   }
   .checkboxGroup {
-      padding-bottom: 0;
-      margin-top: 10px; /* Add space above radios */
-      justify-content: flex-start;
+    padding-bottom: 0;
+    margin-top: 8px;
+    justify-content: flex-start;
   }
   .actionButtons {
-      margin-top: 10px;
-      align-self: flex-end; /* Align buttons right */
+    margin-top: 8px;
+    align-self: flex-end;
   }
   .kpiContainer {
-      grid-template-columns: 1fr 1fr; /* 2 columns on smaller tablets */
+    grid-template-columns: 1fr 1fr;
+  }
+  .customerDataContainer,
+  .statisticsContainer {
+    padding: 14px;
   }
 }
 
 @media (max-width: 576px) {
-    .infoGrid {
-        grid-template-columns: 1fr; /* Force 1 column */
-    }
-     .kpiContainer {
-      grid-template-columns: 1fr; /* 1 column on mobile */
-    }
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+  .kpiContainer {
+    grid-template-columns: 1fr;
+  }
+  .futureActions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .futureActions h3 {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
 }

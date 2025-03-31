@@ -3,28 +3,31 @@
 /* Inherit base styles from App.css */
 
 .container {
-    padding: 20px;
+    padding: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
+    gap: 14px;
   }
   
   .header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color-light);
     display: flex; /* Added for back button alignment */
     justify-content: space-between; /* Space between title and button */
     align-items: center; /* Align vertically */
   }
   .header h1 {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 5px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
   .subtitle {
     color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 0.9rem;
   }
   .titleGroup { /* Group title and subtitle */
       flex-grow: 1;
@@ -39,18 +42,18 @@
   /* Filters Component Styles */
   .filtersContainer {
     background-color: white;
-    padding: 15px 20px;
-    border-radius: var(--border-radius-medium);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 20px;
-    border: 1px solid var(--border-color-light);
+    padding: 14px 16px;
+    border-radius: var(--container-border-radius);
+    box-shadow: var(--container-shadow);
+    margin-bottom: 0;
+    border: var(--container-border);
   }
   
   .filterRow {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px 20px; /* Row gap, Column gap */
-    margin-bottom: 15px;
+    gap: 12px 16px; /* Row gap, Column gap */
+    margin-bottom: 12px;
   }
   
   .filterGroup {
@@ -156,19 +159,19 @@
   .kpiContainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive cards */
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 0;
   }
   
   .kpiCard {
     background-color: white;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
-    padding: 15px;
+    padding: 12px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    border-left: 4px solid var(--primary-color); /* Default border */
+    gap: 12px;
+    border-left: 3px solid var(--primary-color); /* Default border */
   }
   
   .kpiIcon {
@@ -202,9 +205,9 @@
   /* Invoice List Component Styles */
   .listContainer {
     background-color: white;
-    border-radius: var(--border-radius-medium);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color-light);
+    border-radius: var(--container-border-radius);
+    box-shadow: var(--container-shadow);
+    border: var(--container-border);
     flex-grow: 1; /* Allow list to fill space */
     display: flex;
     flex-direction: column;
@@ -366,12 +369,12 @@
   
   /* Pagination */
   .paginationContainer {
-    padding: 15px 20px;
+    padding: 12px 16px;
     border-top: 1px solid var(--border-color-light);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f8f9fa; /* Match actions bar */
+    background-color: var(--bg-secondary); /* Match actions bar */
   }
   
   .paginationInfo {
@@ -387,40 +390,40 @@
   
   /* Responsive */
   @media (max-width: 1200px) {
-      .filterGroup { flex-basis: 220px; } /* Allow more space */
+      .filterGroup { flex-basis: 210px; } /* Allow more space */
   }
   
   @media (max-width: 992px) {
       .filterRow { gap: 10px; }
       .filterGroup { flex-basis: calc(50% - 10px); } /* 2 columns */
-       .dateFilter { flex-basis: calc(50% - 10px); }
-       .filterActions { margin-top: 10px; }
+      .dateFilter { flex-basis: calc(50% - 10px); }
+      .filterActions { margin-top: 8px; }
   }
   
   @media (max-width: 768px) {
     .header {
         flex-direction: column;
         align-items: flex-start;
+        padding-bottom: 10px;
     }
-    .backButton { margin-left: 0; margin-top: 10px; }
+    .backButton { margin-left: 0; margin-top: 8px; }
     .kpiContainer {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
     }
-     .kpiCard { padding: 10px; gap: 10px; }
-     .kpiIcon { font-size: 1.4rem; width: 30px; }
-     .kpiValue { font-size: 1.1rem; }
-     .invoiceTable { font-size: 0.85rem; }
-     .invoiceTable th, .invoiceTable td { padding: 8px 10px; }
-     .actionButton { font-size: 0.9rem; padding: 3px 5px; }
-     .paginationContainer { flex-direction: column; gap: 10px; }
-  
+    .kpiCard { padding: 10px; gap: 10px; }
+    .kpiIcon { font-size: 1.3rem; width: 24px; }
+    .kpiValue { font-size: 1rem; }
+    .invoiceTable { font-size: 0.85rem; }
+    .invoiceTable th, .invoiceTable td { padding: 6px 8px; }
+    .actionButton { font-size: 0.9rem; padding: 3px 5px; }
+    .paginationContainer { flex-direction: column; gap: 8px; }
   }
   
   @media (max-width: 576px) {
       .filterGroup { flex-basis: 100%; } /* 1 column */
       .kpiContainer {
-        grid-template-columns: 1fr; /* 1 column on mobile */
+        grid-template-columns: 1fr 1fr; /* 2 column on small mobile */
       }
-       .paginationControls { display: flex; justify-content: center; width: 100%; }
-  
+      .paginationControls { display: flex; justify-content: center; width: 100%; }
   }

@@ -4,24 +4,28 @@
 .container {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 0;
   height: 100%;
-  /* background-color: var(--bg-primary); /* Consider adding a base background if needed */
+  gap: 14px;
 }
 
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color-light);
 }
 
 .header h1 {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 5px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   margin-top: 0;
 }
 
@@ -29,170 +33,169 @@
 .controlsContainer {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Align items vertically */
-  margin-bottom: 20px;
+  align-items: center;
+  margin-bottom: 0;
   flex-wrap: wrap;
-  gap: 15px; /* Increase gap slightly */
+  gap: 14px;
   background-color: white;
-  padding: 15px 20px; /* Adjust padding */
-  border-radius: var(--border-radius-medium); /* Use variable */
-  box-shadow: var(--shadow-sm); /* Use variable */
+  padding: 14px 16px;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
 }
 
 .controls {
   display: flex;
-  gap: 15px;
-  align-items: flex-end; /* Align form elements to bottom */
+  gap: 12px;
+  align-items: flex-end;
   flex-wrap: wrap;
-  flex-grow: 1; /* Allow controls to grow */
+  flex-grow: 1;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .inputGroup label {
-  font-size: 0.85rem; /* Slightly smaller label */
+  font-size: 0.85rem;
   color: var(--text-secondary);
   font-weight: 500;
-  /* Removed margin-bottom, rely on gap */
 }
 
 .inputGroup input,
 .inputGroup select {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small); /* Use variable */
-  font-size: 0.9rem; /* Adjust font size */
-  height: 38px; /* Standard height */
+  border-radius: var(--border-radius-small);
+  font-size: 0.9rem;
+  height: 34px;
   box-sizing: border-box;
-  min-width: 150px; /* Ensure inputs have minimum width */
+  min-width: 150px;
 }
 
 .inputGroup input:focus,
 .inputGroup select:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .selectInput { /* Specific class for select if needed */
-    /* Styles specific to select, if any */
+  /* Styles specific to select, if any */
 }
-
 
 .actionButtons {
   display: flex;
-  gap: 10px;
-  align-items: center; /* Align buttons vertically */
-  /* height: 38px; /* Removed fixed height, let buttons define height */
+  gap: 8px;
+  align-items: center;
 }
 
 /* Estilos da informação de referência */
 .referenceInfo {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
   background-color: white;
-  padding: 12px 20px; /* Adjust padding */
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 20px;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  padding: 12px 16px;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
+  margin-bottom: 0;
+  flex-wrap: wrap;
 }
 
 .referenceIcon {
-  font-size: 1.3rem; /* Slightly larger */
+  font-size: 1.2rem;
   color: var(--primary-color);
 }
 
 .referenceCodeText {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
 }
 .referenceCodeText strong {
-    color: var(--text-primary);
-    font-weight: 600;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .totalizers {
   display: flex;
-  margin-left: auto; /* Pushes to the right */
-  gap: 25px; /* Increase gap */
-  flex-wrap: wrap; /* Allow wrapping */
+  margin-left: auto;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .totalizer {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .totalizer i {
-  font-size: 1.1rem; /* Slightly smaller */
-  color: var(--text-secondary); /* More subtle color */
+  font-size: 1rem;
+  color: var(--text-secondary);
 }
 
 .totalizer span {
-  font-size: 0.95rem; /* Adjust size */
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-primary);
 }
 
 /* Estilos da matriz de produtos */
 .matrixContainer {
-  overflow-x: auto; /* Allow horizontal scroll */
+  overflow-x: auto;
   background: white;
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--shadow-md); /* Slightly larger shadow */
-  margin: 0; /* Remove default margin */
-  overflow: hidden; /* Prevent content overflow breaking radius */
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
+  margin: 0;
+  overflow: hidden;
 }
 
 .matrixTable {
   width: 100%;
-  min-width: 600px; /* Minimum width before scroll */
-  border-collapse: separate; /* Allows border-radius on cells if needed */
+  min-width: 600px;
+  border-collapse: separate;
   border-spacing: 0;
-  font-size: 0.9rem; /* Adjust base font size */
-  table-layout: fixed; /* Helps with consistent column widths */
+  font-size: 0.9rem;
+  table-layout: fixed;
 }
 
 .matrixTable th,
 .matrixTable td {
-  padding: 10px 12px; /* Adjust padding */
+  padding: 8px 10px;
   text-align: center;
-  border-bottom: 1px solid var(--border-color-light); /* Lighter border */
-  white-space: nowrap; /* Prevent wrapping in cells */
+  border-bottom: 1px solid var(--border-color-light);
+  white-space: nowrap;
 }
 
 /* Header specific */
 .matrixTable th {
   background-color: var(--primary-color);
   color: white;
-  font-weight: 600; /* Bolder header */
-  position: sticky; /* Make header sticky */
+  font-weight: 600;
+  position: sticky;
   top: 0;
-  z-index: 10; /* Ensure header is above content */
+  z-index: 10;
 }
 
 .colorHeader, .colorCell {
   text-align: left;
-  position: sticky; /* Make first column sticky */
+  position: sticky;
   left: 0;
-  background-color: white; /* Background needed for sticky */
-  z-index: 5; /* Below header */
-  border-right: 1px solid var(--border-color-light); /* Separator line */
-  width: 150px; /* Fixed width for color column */
+  background-color: white;
+  z-index: 5;
+  border-right: 1px solid var(--border-color-light);
+  width: 150px;
 }
 .matrixTable th.colorHeader {
-    background-color: var(--primary-color); /* Keep header background */
-    color: white;
-    z-index: 11; /* Above other sticky elements */
+  background-color: var(--primary-color);
+  color: white;
+  z-index: 11;
 }
-
 
 .colorCell {
   font-weight: 500;
@@ -205,18 +208,18 @@
 }
 
 .balanceCell:hover {
-  filter: brightness(0.95); /* More subtle hover */
+  filter: brightness(0.95);
 }
 
 .emptyCell {
-  color: var(--text-disabled); /* More distinct color for empty */
+  color: var(--text-disabled);
   font-style: italic;
 }
 
-/* Classes de status - Keep as they are, colors defined by variables */
+/* Classes de status */
 .suficiente {
   background-color: var(--success-light);
-  color: var(--success-dark); /* Darker text for contrast */
+  color: var(--success-dark);
 }
 
 .baixo {
@@ -228,13 +231,17 @@
   background-color: var(--danger-light);
   color: var(--danger-dark);
 }
-.erro { /* Style for error status */
+.erro {
   background-color: var(--danger-light);
   color: var(--danger-dark);
   font-weight: bold;
   text-decoration: line-through;
 }
 
+/* Container principal da página (para matriz ou estados) */
+.productContainer {
+  margin-top: 0;
+}
 
 /* Estilos dos estados */
 .initialState,
@@ -242,19 +249,20 @@
 .errorState,
 .noData,
 .emptyState,
-.modalErrorContent, /* Added modal states */
+.modalErrorContent,
 .modalEmptyContent {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px; /* Adjust padding */
+  padding: 30px 16px;
   text-align: center;
   background-color: white;
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
   color: var(--text-secondary);
-  min-height: 200px; /* Give states some minimum height */
+  min-height: 180px;
 }
 
 .initialState i,
@@ -264,10 +272,10 @@
 .emptyState i,
 .modalErrorContent i,
 .modalEmptyContent i {
-  font-size: 2.5rem; /* Adjust icon size */
-  color: var(--text-disabled); /* Default disabled color */
-  margin-bottom: 15px;
-  display: block; /* Ensure icon is block element */
+  font-size: 2.2rem;
+  color: var(--text-disabled);
+  margin-bottom: 12px;
+  display: block;
 }
 
 .errorState i, .modalErrorContent i {
@@ -286,111 +294,103 @@
 .modalErrorContent p,
 .modalEmptyContent p {
   color: var(--text-secondary);
-  font-size: 1rem; /* Adjust font size */
-  margin-bottom: 5px;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  line-height: 1.4;
 }
 
-/* Container principal da página (para matriz ou estados) */
-.productContainer {
-    margin-top: 20px; /* Add space above the content area */
-}
-
-/* Estilos dos modais - Mostly rely on BaseModal.css */
-
-/* Specific adjustments for modals within Products page */
+/* Estilos dos modais */
 .detailsModalContent {
-    max-width: 700px; /* Wider modal for details */
+  max-width: 700px;
 }
 .observationsModalContent {
-    max-width: 650px; /* Slightly wider */
+  max-width: 650px;
 }
 .pendingObservationsModalContent {
-    max-width: 750px; /* Wider for table */
+  max-width: 750px;
 }
 .confirmModalContent {
-    max-width: 450px;
+  max-width: 450px;
 }
 .helpModal {
-    max-width: 550px;
+  max-width: 550px;
 }
 
 /* Grid layout for modal details */
 .detailSection {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 .detailSection h4 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--primary-dark);
-    margin-bottom: 0.8rem;
-    font-size: 1.1rem;
-    border-bottom: 1px solid var(--border-color-light);
-    padding-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  border-bottom: 1px solid var(--border-color-light);
+  padding-bottom: 0.5rem;
+  font-weight: 500;
 }
 .detailSection h4 i {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
-
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
-    gap: 0.8rem 1.5rem; /* Row and column gap */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem 1.5rem;
 }
 
 .grid p {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .grid strong {
-    display: block;
-    color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: 0.1rem; /* Small space between label and value */
+  display: block;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 0.1rem;
 }
 
 .detailSeparator {
-    border: none;
-    border-top: 1px dashed var(--border-color);
-    margin: 1.5rem 0;
+  border: none;
+  border-top: 1px dashed var(--border-color-light);
+  margin: 1.2rem 0;
 }
 
 /* --- Estilos para ObservationModal --- */
-
 .observationsList {
-  max-height: 45vh; /* Limita a altura */
+  max-height: 45vh;
   overflow-y: auto;
-  padding: 0.2rem 0.5rem 0.2rem 0.2rem; /* Add padding for scrollbar and items */
+  padding: 0.2rem 0.5rem 0.2rem 0.2rem;
   margin-bottom: 1rem;
   border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius-small);
-  background-color: var(--bg-secondary); /* Light background for list area */
+  background-color: var(--bg-secondary);
 }
 
 /* Estilo base do CARD de observação */
 .observationItem {
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-medium);
-  padding: 0.8rem 1rem; /* Adjust padding */
-  background-color: var(--background-light); /* White background for card */
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-small);
+  padding: 0.7rem 0.9rem;
+  background-color: var(--background-light);
   box-shadow: var(--shadow-sm);
-  margin-bottom: 0.8rem; /* Space between cards */
+  margin-bottom: 0.8rem;
   position: relative;
   transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
-  border-left-width: 5px; /* Status border */
+  border-left-width: 4px;
   border-left-style: solid;
 }
 .observationItem:last-child {
-    margin-bottom: 0.2rem; /* Reduce margin on last item */
+  margin-bottom: 0.2rem;
 }
 
 .observationItem:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--primary-light); /* Highlight border on hover */
+  border-color: var(--primary-light);
 }
 
 /* Estilo para observação PENDENTE */
@@ -401,7 +401,7 @@
 /* Estilo para observação RESOLVIDA */
 .observationItem.resolved {
   border-left-color: var(--success-color);
-  opacity: 0.9; /* Slightly fade resolved items */
+  opacity: 0.9;
 }
 .observationItem.resolved .observationStatus {
   color: var(--success-dark);
@@ -412,9 +412,9 @@
 
 /* Estilo durante a ação de resolver */
 .observationItem.resolving {
-    border-left-color: var(--primary-color);
-    animation: resolvingPulseBorder 1.5s infinite;
-    opacity: 1; /* Ensure visible while resolving */
+  border-left-color: var(--primary-color);
+  animation: resolvingPulseBorder 1.5s infinite;
+  opacity: 1;
 }
 
 /* Ajustes internos do card de observação */
@@ -422,14 +422,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.6rem; /* Adjust spacing */
-  font-size: 0.75rem; /* Smaller header text */
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
 
 .observationHeader i {
   margin-right: 0.3rem;
-  vertical-align: middle; /* Align icons better */
+  vertical-align: middle;
 }
 
 .observationUser,
@@ -439,11 +439,11 @@
 }
 
 .observationContent {
-  margin-bottom: 0.8rem; /* Adjust spacing */
-  line-height: 1.5;
+  margin-bottom: 0.7rem;
+  line-height: 1.4;
   white-space: pre-wrap;
   word-break: break-word;
-  font-size: 0.9rem; /* Standard text size */
+  font-size: 0.85rem;
   color: var(--text-primary);
 }
 
@@ -451,11 +451,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   border-top: 1px solid var(--border-color-light);
-  padding-top: 0.6rem; /* Adjust spacing */
-  margin-top: 0.8rem; /* Adjust spacing */
+  padding-top: 0.5rem;
+  margin-top: 0.7rem;
 }
 
 .observationStatus {
@@ -464,8 +464,8 @@
   align-items: center;
 }
 .observationStatus i {
-    margin-right: 0.4rem;
-    font-size: 0.9em;
+  margin-right: 0.3rem;
+  font-size: 0.9em;
 }
 
 .observationItem.pending .observationStatus {
@@ -477,8 +477,7 @@
 }
 
 .resolveButton {
-   margin-left: auto; /* Push button right */
-   /* Uses .btn.small styles */
+  margin-left: auto;
 }
 
 /* Animação de pulso */
@@ -490,13 +489,13 @@
 
 /* Seção para adicionar nova observação */
 .newObservationSection {
-  margin-top: 1rem; /* Reduced space */
+  margin-top: 1rem;
 }
 
-.separator { /* Re-defined here for clarity */
-    border: none;
-    border-top: 1px solid var(--border-color-light);
-    margin: 1rem 0;
+.separator {
+  border: none;
+  border-top: 1px solid var(--border-color-light);
+  margin: 0.8rem 0;
 }
 
 .newObservationForm textarea {
@@ -508,31 +507,31 @@
   resize: vertical;
   min-height: 60px;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 .newObservationForm textarea:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .formActions {
-    text-align: right;
+  text-align: right;
 }
 
 /* Mensagem de erro inline */
 .formErrorInline {
-    color: var(--danger-color);
-    font-size: 0.8rem;
-    margin-top: -0.3rem;
-    margin-bottom: 0.5rem;
-    display: block;
-    text-align: left; /* Align left below textarea */
+  color: var(--danger-color);
+  font-size: 0.75rem;
+  margin-top: -0.3rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  text-align: left;
 }
 
 /* Estilos para a lista de observações pendentes */
 .searchContainer {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .searchInputContainer {
@@ -545,24 +544,24 @@
   position: absolute;
   left: 10px;
   color: var(--text-secondary);
-  pointer-events: none; /* Allow clicking through icon */
+  pointer-events: none;
 }
 
 .searchInput {
   width: 100%;
-  padding: 8px 12px 8px 35px; /* Padding for icon */
+  padding: 7px 10px 7px 32px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-small);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 .searchInput:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .pendingObservationsContainer {
-  max-height: 60vh; /* Increase max height */
+  max-height: 60vh;
   overflow-y: auto;
   border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius-small);
@@ -571,12 +570,12 @@
 .pendingObservationsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .pendingObservationsTable th,
 .pendingObservationsTable td {
-  padding: 10px 12px; /* Adjust padding */
+  padding: 8px 10px;
   border-bottom: 1px solid var(--border-color-light);
   text-align: left;
   white-space: nowrap;
@@ -592,14 +591,13 @@
 /* Specific column alignments/widths for pending table */
 .referenceCol { font-weight: 500; }
 .userCol { }
-.dateCol { width: 150px; } /* Fixed width for date */
-.actionsCol { width: 120px; text-align: center; } /* Fixed width for actions */
+.dateCol { width: 140px; }
+.actionsCol { width: 100px; text-align: center; }
 
 .referenceCodeCell { font-weight: 500; }
 .userCell { }
-.dateCell { font-size: 0.85rem; color: var(--text-secondary); }
+.dateCell { font-size: 0.8rem; color: var(--text-secondary); }
 .actionsCell { text-align: center; }
-
 
 .referenceRow {
   cursor: pointer;
@@ -610,19 +608,18 @@
   background-color: var(--bg-hover);
 }
 
-
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 15px;
-  padding: 10px 0;
+  margin-top: 12px;
+  padding: 8px 0;
   border-top: 1px solid var(--border-color-light);
 }
 
 .pageInfo {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 /* Estilos para o badge de observações */
@@ -632,32 +629,74 @@
 
 .badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -6px;
+  right: -6px;
   background-color: var(--danger-color);
   color: white;
   border-radius: 50%;
-  min-width: 20px; /* Use min-width */
-  height: 20px;
-  padding: 0 5px; /* Padding for numbers > 9 */
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: bold;
-  line-height: 20px; /* Ensure text is centered vertically */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  line-height: 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.badge.hasPending { /* Use specific class for animation */
+.badge.hasPending {
   animation: pulse 1.5s infinite;
 }
 
-/* Animation remains the same */
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
-/* Removed .noAnimation - use .hasPending directly */
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.4rem;
+  }
+  
+  .subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .controlsContainer, 
+  .referenceInfo {
+    padding: 12px 14px;
+  }
+  
+  .matrixTable th,
+  .matrixTable td {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .inputGroup input,
+  .inputGroup select {
+    min-width: 130px;
+  }
+}
+
+@media (max-width: 576px) {
+  .inputGroup {
+    flex: 1 1 100%;
+  }
+  
+  .referenceInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .totalizers {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+}

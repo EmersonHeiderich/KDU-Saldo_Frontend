@@ -2,96 +2,95 @@
 
 /* --- Page Layout --- */
 .container {
-  padding: 20px;
-  height: 100%; /* Ensure it takes full available height */
+  padding: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--background-color); /* Match body background */
+  gap: 14px;
 }
 
 .header {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border-color-light); /* Lighter border */
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color-light);
 }
 
 .header h1 {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 5px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 }
 
 /* --- Actions Bar --- */
 .actionsBar {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Vertically align items in the bar */
+  align-items: center;
   flex-wrap: wrap;
-  gap: 15px;
-  padding: 15px 20px;
-  margin-bottom: 20px; /* Space between actions and grid */
-  background-color: var(--bg-white); /* White background */
-  border-radius: var(--border-radius-medium);
-  border: 1px solid var(--border-color-light);
-  box-shadow: var(--shadow-sm);
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 0;
+  background-color: white;
+  border-radius: var(--container-border-radius);
+  border: var(--container-border);
+  box-shadow: var(--container-shadow);
 }
 
 .searchBox {
-  position: relative; /* <<< VERY IMPORTANT for absolute positioning of icon */
+  position: relative;
   min-width: 250px;
   max-width: 400px;
   flex-grow: 1;
-  /* We don't need flex properties here usually */
 }
 
 .searchBox input[type="search"] {
   width: 100%;
-  padding: 8px 12px 8px 35px; /* <<< Left padding to make space for the icon */
+  padding: 6px 10px 6px 32px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-small);
-  height: 38px;
-  font-size: 0.95rem;
+  height: 34px;
+  font-size: 0.9rem;
   transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-  box-sizing: border-box; /* <<< Ensure padding is included in height/width */
+  box-sizing: border-box;
 }
 .searchBox input[type="search"]::-webkit-search-cancel-button {
-    /* Optional: Hide the default clear button */
-    -webkit-appearance: none;
-    appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .searchBox input[type="search"]:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
-/* Style for the search icon *positioned absolutely within* .searchBox */
 .searchBox i.fa-search {
-  position: absolute;   /* <<< Position relative to .searchBox */
-  top: 50%;             /* <<< Center vertically */
-  left: 12px;            /* <<< Position from the left edge */
-  transform: translateY(-50%); /* <<< Fine-tune vertical center */
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
   color: var(--text-secondary);
-  pointer-events: none; /* <<< Prevent icon blocking input clicks */
-  font-size: 0.95em;      /* <<< Adjust icon size if needed */
-  z-index: 2;             /* <<< Ensure icon is visually above input border/content if needed */
+  pointer-events: none;
+  font-size: 0.9em;
+  z-index: 2;
 }
 
 /* --- AG Grid Wrapper --- */
 .gridWrapper {
-    width: 100%;
-    border: 1px solid var(--border-color-light); /* Border around grid */
-    border-radius: var(--border-radius-medium);
-    overflow: hidden; /* Clip corners */
-    box-shadow: var(--shadow-sm);
-    background-color: var(--bg-white); /* Ensure background for grid */
-    /* AG Grid's domLayout='autoHeight' will manage height */
+  width: 100%;
+  border: var(--container-border);
+  border-radius: var(--container-border-radius);
+  overflow: hidden;
+  box-shadow: var(--container-shadow);
+  background-color: var(--bg-white);
+  flex-grow: 1;
 }
 
 /* --- Status Badge Styling (used by StatusCellRenderer) --- */
@@ -104,32 +103,30 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   line-height: 1.2;
-  text-align: center; /* Center text */
+  text-align: center;
 }
 
-.statusBadge.active { /* Add .statusBadge class prefix */
+.statusBadge.active {
   background-color: var(--success-light);
   color: var(--success-dark);
 }
 
-.statusBadge.inactive { /* Add .statusBadge class prefix */
+.statusBadge.inactive {
   background-color: var(--danger-light);
   color: var(--danger-dark);
 }
 
-
 /* --- Permissions Badges Styling (used by PermissionsCellRenderer) --- */
 .permissionsContainerWithTooltip {
-    cursor: default; /* Indicate hover is for info */
-    /* Container should just hold the badges, badges handle wrapping */
-    display: block; /* Ensure it takes up cell space */
-    padding: 2px 0; /* Add slight vertical padding if needed */
+  cursor: default;
+  display: block;
+  padding: 2px 0;
 }
 
 .permissionsBadges {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
 }
 
@@ -151,19 +148,18 @@
 .permissionBadge.customerPanel { background-color: #e8f5e9; color: #1b5e20; border-color: #a5d6a7; }
 .permissionBadge.fiscal { background-color: #fff8e1; color: #ff6f00; border-color: #ffcc80; }
 
-
 /* --- Action Buttons Styling (used by ActionsCellRenderer) --- */
 .actions {
   display: flex;
-  gap: 5px;
+  gap: 4px;
   justify-content: center;
   align-items: center;
-  height: 100%; /* Fill cell height */
+  height: 100%;
 }
 
 .btnIcon {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: none;
   background-color: transparent;
@@ -181,78 +177,75 @@
   transform: scale(1.1);
 }
 .btnIcon:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .btnIcon.edit:hover:not(:disabled) { color: var(--accent-color); }
 .btnIcon.delete:hover:not(:disabled) { color: var(--danger-color); }
 
-
 /* --- Error / Loading States (used by AG Grid overlays) --- */
-.errorRow { /* Style for the error message shown *above* the grid */
-    padding: 15px 20px;
-    text-align: center;
-    background-color: var(--danger-light);
-    border: 1px solid var(--danger-color);
-    border-radius: var(--border-radius-small);
-    margin: 15px 0;
-    color: var(--danger-dark);
+.errorRow {
+  padding: 12px 16px;
+  text-align: center;
+  background-color: var(--danger-light);
+  border: 1px solid var(--danger-color);
+  border-radius: var(--border-radius-small);
+  margin: 12px 0;
+  color: var(--danger-dark);
 }
 .errorRow i {
-    margin-right: 8px;
+  margin-right: 8px;
 }
-
 
 /* --- Modal Styles (UserModal & ConfirmModal) --- */
 .userModalContent, .confirmModalContent {
-    max-width: 550px;
+  max-width: 550px;
 }
 .confirmModalContent {
-    max-width: 450px;
+  max-width: 450px;
 }
 
 .modalBodyConfirm {
-    padding: 25px 20px 30px;
-    font-size: 1.05rem;
-    text-align: center;
-    color: var(--text-primary);
+  padding: 20px 16px 24px;
+  font-size: 1rem;
+  text-align: center;
+  color: var(--text-primary);
 }
 .modalBodyConfirm p {
-    line-height: 1.5;
-    margin-bottom: 0.5em;
+  line-height: 1.4;
+  margin-bottom: 0.5em;
 }
 .modalBodyConfirm strong {
-    color: var(--primary-color);
-    font-weight: 600;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .modalFooter {
-  padding: 15px 20px;
+  padding: 12px 16px;
   background-color: var(--bg-secondary);
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 8px;
   border-top: 1px solid var(--border-color-light);
 }
 .modalFooter .btn {
-    min-width: 100px;
+  min-width: 100px;
 }
-
 
 /* --- User Modal Form Styles --- */
 .formGroup {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 .formGroup:last-of-type {
-    margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .formGroup label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-primary);
 }
 
@@ -260,55 +253,55 @@
 .formGroup input[type="email"],
 .formGroup input[type="password"] {
   width: 100%;
-  padding: 9px 12px;
+  padding: 6px 10px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-small);
-  font-size: 1rem;
+  font-size: 0.9rem;
+  height: 34px;
   transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 .formGroup input:disabled {
-    background-color: var(--bg-hover);
-    cursor: not-allowed;
-    opacity: 0.7;
+  background-color: var(--bg-hover);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .formGroup input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-light-transparent);
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .helpText {
   display: block;
-  margin-top: 5px;
+  margin-top: 4px;
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .formError {
   background-color: var(--danger-light);
   color: var(--danger-dark);
   border: 1px solid var(--danger-color);
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: var(--border-radius-small);
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 12px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
+  gap: 6px;
+  font-size: 0.85rem;
 }
 .formError i {
-    font-size: 1.1em;
+  font-size: 1em;
 }
-
 
 /* --- Toggle Switch Styling --- */
 .toggleSwitch {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .toggleSwitch input[type="checkbox"] {
@@ -320,11 +313,11 @@
 
 .toggleSwitch .toggleLabel {
   cursor: pointer;
-  width: 44px;
-  height: 22px;
+  width: 40px;
+  height: 20px;
   background: #ccc;
   display: block;
-  border-radius: 22px;
+  border-radius: 20px;
   position: relative;
   transition: background-color 0.3s ease;
 }
@@ -334,10 +327,10 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: white;
-  border-radius: 18px;
+  border-radius: 16px;
   transition: 0.3s ease;
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
@@ -351,26 +344,25 @@
   transform: translateX(-100%);
 }
 .toggleSwitch input:disabled + .toggleLabel {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-    opacity: 0.7;
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 .toggleSwitch input:disabled + .toggleLabel:after {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .toggleSwitch span {
-    font-size: 0.95rem;
+  font-size: 0.9rem;
 }
-
 
 /* --- Permissions Styling --- */
 .permissionsContainer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px 15px;
-  margin-top: 8px;
-  padding: 15px;
+  gap: 10px 12px;
+  margin-top: 6px;
+  padding: 12px;
   border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius-small);
   background-color: var(--bg-secondary);
@@ -379,7 +371,7 @@
 .permissionItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .permissionCheckbox {
@@ -390,60 +382,59 @@
   flex-shrink: 0;
 }
 .permissionCheckbox:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .permissionItem label {
   margin-bottom: 0;
   font-weight: normal;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   flex-grow: 1;
 }
 input[type="checkbox"]:disabled + label {
-    color: var(--text-disabled);
-    cursor: not-allowed;
+  color: var(--text-disabled);
+  cursor: not-allowed;
 }
-
 
 /* --- Responsive adjustments --- */
 @media (max-width: 768px) {
-    .actionsBar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .searchBox {
-        max-width: none;
-        width: 100%;
-    }
-    /* AG Grid columns usually need configuration for responsiveness */
+  .actionsBar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+  }
+  .searchBox {
+    max-width: none;
+    width: 100%;
+  }
 }
 
 @media (max-width: 576px) {
-     .permissionBadge {
-        font-size: 0.65rem;
-        padding: 2px 4px;
-    }
-    .actions {
-        gap: 2px;
-    }
-    .btnIcon {
-        width: 30px;
-        height: 30px;
-    }
-     .btnIcon i {
-        font-size: 0.8rem;
-    }
-     .modalFooter {
-        flex-direction: column-reverse;
-        gap: 8px;
-    }
-     .modalFooter .btn {
-        width: 100%;
-        min-width: unset;
-    }
-    .permissionsContainer {
-        grid-template-columns: 1fr;
-    }
+  .permissionBadge {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+  }
+  .actions {
+    gap: 2px;
+  }
+  .btnIcon {
+    width: 28px;
+    height: 28px;
+  }
+  .btnIcon i {
+    font-size: 0.8rem;
+  }
+  .modalFooter {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .modalFooter .btn {
+    width: 100%;
+    min-width: unset;
+  }
+  .permissionsContainer {
+    grid-template-columns: 1fr;
+  }
 }

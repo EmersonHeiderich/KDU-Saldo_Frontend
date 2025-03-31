@@ -13,7 +13,7 @@ interface FiscalKPIsProps {
 // Simple KPI card component
 interface KPICardProps {
     title: string;
-    value: string | number;
+    value: React.ReactNode;
     icon: string;
     tooltip?: string;
 }
@@ -39,7 +39,6 @@ const FiscalKPIsComponent: React.FC<FiscalKPIsProps> = ({ kpis, isLoading = fals
                 <KPICard title="Valor Total" value={placeholderValue} icon="fas fa-dollar-sign" tooltip="Soma dos valores totais das notas listadas" />
                 <KPICard title="Valor Médio" value={placeholderValue} icon="fas fa-balance-scale-right" tooltip="Valor médio das notas listadas" />
                 <KPICard title="Qtde. Total Itens" value={placeholderValue} icon="fas fa-boxes" tooltip="Soma das quantidades totais de itens das notas listadas" />
-                {/* <KPICard title="Qtde. Média Itens" value={placeholderValue} icon="fas fa-box" tooltip="Quantidade média de itens por nota listada" /> */}
             </div>
         );
     }

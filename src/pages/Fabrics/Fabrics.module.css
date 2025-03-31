@@ -1,43 +1,46 @@
 /* src/pages/Fabrics/Fabrics.module.css */
 
 .container {
-  padding: 20px;
+  padding: 0;
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .header {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color-light);
 }
 
 .header h1 {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 5px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   margin-top: 0;
 }
 
 /* New container for controls and totalizers */
 .controlsAndTotalsContainer {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  justify-content: space-between; /* Push groups apart */
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
   background-color: white;
-  padding: 12px 20px; /* Reduced padding slightly */
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 20px;
-  gap: 15px 20px; /* Row and column gap */
-  border: 1px solid var(--border-color-light);
+  padding: 14px 16px;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  margin-bottom: 0;
+  gap: 14px;
+  border: var(--container-border);
 }
 
 /* Group for action buttons */
@@ -50,68 +53,62 @@
 /* Container for totalizers */
 .totalizers {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping */
-  gap: 20px; /* Gap between totalizers */
+  flex-wrap: wrap;
+  gap: 16px;
   align-items: center;
-  /* Removed margin-left: auto; handled by justify-content: space-between on parent */
 }
 
 .totalizador {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .totalizador i {
-  font-size: 1.1rem;
-  color: var(--text-secondary); /* Adjusted color */
+  font-size: 1rem;
+  color: var(--text-secondary);
   opacity: 0.9;
 }
 
 .totalizador span {
-  font-size: 0.95rem;
-  font-weight: 600; /* Make totals bold */
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--text-primary);
 }
 
-/* Remove old input group styles */
-/* .inputGroup { ... removed ... } */
-/* .inputGroup label { ... removed ... } */
-/* .inputGroup input { ... removed ... } */
-
 /* Wrapper for the AG Grid table for potential height constraints */
 .gridWrapper {
-    flex-grow: 1; /* Allow grid wrapper to fill vertical space */
-    width: 100%;
-    /* If using domLayout='normal' on AgGridTable, set height here: */
-    /* height: calc(100vh - 280px); */ /* Example: Adjust height based on other elements */
-    /* overflow: hidden; */ /* Prevent scrollbars if height is managed by grid */
+  flex-grow: 1;
+  width: 100%;
+  background-color: white;
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
+  overflow: hidden;
 }
 
-
-/* State Messages (Loading, Initial, No Data, Error) - Adjusted */
-.loadingOrInitialState, /* Combines initial and loading messages */
+/* State Messages (Loading, Initial, No Data, Error) */
+.loadingOrInitialState,
 .errorState {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 30px 16px;
   text-align: center;
-  min-height: 200px;
+  min-height: 180px;
   color: var(--text-secondary);
   flex-grow: 1;
-  /* Styles adjusted to show without a border/background */
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  margin-top: 20px;
+  background-color: var(--bg-white);
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-shadow);
+  border: var(--container-border);
 }
 
 .loadingOrInitialState i,
 .errorState i {
-  font-size: 2.8rem;
-  margin-bottom: 15px;
+  font-size: 2.2rem;
+  margin-bottom: 12px;
   opacity: 0.7;
 }
 
@@ -119,79 +116,85 @@
   color: var(--danger-color);
   opacity: 1;
 }
-.loadingOrInitialState i.fa-spinner { /* Specific spinner styling */
+
+.loadingOrInitialState i.fa-spinner {
   color: var(--primary-color);
   opacity: 1;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
 }
 
 .loadingOrInitialState p,
 .errorState p {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   max-width: 500px;
-  line-height: 1.6;
+  line-height: 1.4;
 }
+
 .errorState p {
-    color: var(--danger-dark);
+  color: var(--danger-dark);
 }
-.errorState button { /* Style for retry button */
-    margin-top: 15px;
+
+.errorState button {
+  margin-top: 12px;
 }
 
 /* Responsiveness */
 @media (max-width: 992px) {
-    .controlsAndTotalsContainer {
-        /* Adjust layout if needed on medium screens */
-        gap: 15px;
-    }
-    .totalizers {
-        /* Maybe force totalizers to wrap */
-        width: 100%;
-        justify-content: space-around;
-        margin-top: 10px; /* Add space when it wraps */
-        border-top: 1px solid var(--border-color-light);
-        padding-top: 10px;
-    }
+  .controlsAndTotalsContainer {
+    gap: 12px;
+  }
+  
+  .totalizers {
+    width: 100%;
+    justify-content: space-around;
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color-light);
+    padding-top: 10px;
+  }
 }
 
 @media (max-width: 768px) {
   .controlsAndTotalsContainer {
-    flex-direction: column; /* Stack elements vertically */
-    align-items: stretch; /* Stretch items */
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
   }
+  
   .actionButtons {
-     justify-content: flex-start; /* Align buttons left */
-     /* Optional: Make buttons full width? */
+    justify-content: flex-start;
   }
+  
   .totalizers {
-      justify-content: space-around;
-      font-size: 0.9rem;
-      gap: 15px; /* Reduce gap */
-      width: 100%; /* Ensure full width */
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px solid var(--border-color-light);
+    justify-content: space-around;
+    font-size: 0.85rem;
+    gap: 12px;
+    width: 100%;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color-light);
+  }
+  
+  .loadingOrInitialState,
+  .errorState {
+    padding: 24px 14px;
   }
 }
 
 @media (max-width: 480px) {
-    .totalizers {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
+  .totalizers {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }
 
-/* AG Grid Cell Specific Styles (Ensure these exist in AgGridTable.module.css or global) */
-/* These are fallback/duplicates, prefer defining them in AgGridTable.module.css */
+/* AG Grid Cell Specific Styles */
 :global(.ag-cell.cell-saldo-warning) {
-    color: var(--warning-dark) !important;
-    font-weight: 600 !important;
-    /* background-color: var(--warning-light) !important; */ /* Optional background */
+  color: var(--warning-dark) !important;
+  font-weight: 600 !important;
 }
 
 :global(.ag-cell.cell-saldo-danger) {
-    color: var(--danger-dark) !important;
-    font-weight: 600 !important;
-    /* background-color: var(--danger-light) !important; */ /* Optional background */
+  color: var(--danger-dark) !important;
+  font-weight: 600 !important;
 }
