@@ -1,0 +1,281 @@
+/* src/pages/AccountsReceivable/AccountsReceivable.module.css */
+
+/* --- Base Layout (Similar to Fiscal) --- */
+.container {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.header {
+    margin-bottom: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color-light);
+}
+.header h1 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* --- Filters --- */
+.filtersContainer {
+    background-color: white;
+    padding: 14px 16px;
+    border-radius: var(--container-border-radius);
+    box-shadow: var(--container-shadow);
+    margin-bottom: 0;
+    border: var(--container-border);
+}
+
+.filterRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    margin-bottom: 12px;
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1 1 160px; /* Adjust basis */
+    min-width: 150px;
+}
+.filterGroup label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+.filterGroup input[type="text"],
+.filterGroup input[type="date"],
+.filterGroup select { /* Style select like input */
+    height: 34px; /* Match global style */
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-small);
+    box-sizing: border-box;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+.filterGroup input:focus,
+.filterGroup select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
+}
+.filterGroup select { /* Specific styles for select arrow */
+    appearance: none;
+    background-color: white;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+}
+
+.filterActions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+    gap: 10px;
+    flex-basis: 100%;
+    margin-top: 5px;
+}
+/* Add spacing between specific buttons if needed */
+.filterActions .btn.info {
+    margin-left: auto; /* Push advanced filter button towards the left */
+}
+
+
+/* --- Error States --- */
+.errorState {
+    padding: 12px 16px;
+    text-align: center;
+    background-color: var(--danger-light);
+    border: 1px solid var(--danger-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 14px;
+    color: var(--danger-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.errorState i {
+    font-size: 1.1rem;
+}
+.errorState p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+/* Specific style for Boleto error */
+.boletoErrorState {
+    background-color: var(--warning-light);
+    border-color: var(--warning-color);
+    color: var(--warning-dark);
+    position: relative; /* For close button positioning */
+}
+.closeErrorButton {
+    background: none;
+    border: none;
+    color: inherit; /* Inherit color from parent */
+    font-size: 1.2rem;
+    line-height: 1;
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    cursor: pointer;
+    padding: 2px 4px;
+    opacity: 0.7;
+}
+.closeErrorButton:hover {
+    opacity: 1;
+}
+
+/* --- AG Grid Wrapper --- */
+.gridWrapper {
+    width: 100%;
+    border: var(--container-border);
+    border-radius: var(--container-border-radius);
+    overflow: hidden;
+    box-shadow: var(--container-shadow);
+    background-color: var(--bg-white);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Cell Renderer Styles --- */
+.actionsCell {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.actionButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    transition: color 0.2s ease, transform 0.1s ease;
+    border-radius: 4px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.actionButton:hover:not(:disabled) {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+.actionButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.boletoButton:hover:not(:disabled) {
+    color: var(--success-dark);
+}
+.boletoButton i.fa-spinner {
+    color: var(--primary-color); /* Spinner color */
+}
+
+/* --- Advanced Filters Modal Styles --- NEW --- */
+.advancedFiltersModal {
+    max-width: 750px; /* Adjust width as needed */
+}
+
+.modalFormGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 12px 18px; /* Row and column gap */
+    padding: 10px 0; /* Padding inside modal body */
+}
+
+.modalFormGrid .formGroup {
+    margin-bottom: 0; /* Remove default bottom margin */
+}
+
+.modalFormGrid .formGroup.fullWidth {
+    grid-column: 1 / -1; /* Make element span all columns */
+}
+
+/* Checkbox group styling */
+.checkboxGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 15px; /* Space between checkboxes */
+    padding-top: 5px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: normal; /* Override potential bold from parent label */
+    color: var(--text-primary);
+    cursor: pointer;
+    margin-bottom: 0; /* Override default */
+}
+.checkboxLabel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary-color); /* Use theme color */
+}
+
+/* Footer for modal */
+.modalFooter {
+    padding: 12px 16px;
+    background-color: var(--bg-secondary);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid var(--border-color-light);
+    margin-top: 15px; /* Space above footer */
+}
+
+/* Badge on Filter Button */
+.filterCountBadge {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 8px;
+    margin-left: 6px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+    .filterRow { gap: 10px; }
+    .filterGroup { flex-basis: calc(50% - 10px); }
+    .filterActions { margin-top: 8px; }
+}
+
+@media (max-width: 576px) {
+    .filterGroup { flex-basis: 100%; }
+     .modalFormGrid {
+        grid-template-columns: 1fr; /* Stack fields in modal on small screens */
+    }
+}

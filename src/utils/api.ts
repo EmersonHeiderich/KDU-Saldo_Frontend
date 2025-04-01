@@ -39,17 +39,23 @@ async function _apiRequest(
 
   const createRequestOptions = (): RequestInit => {
     const headers: HeadersInit = {
-      'Accept': responseType === 'json' ? 'application/json' : 'application/pdf', // Adjust Accept header
+      // Adjust Accept header based on expected response
+      'Accept': responseType === 'json' ? 'application/json' : 'application/pdf',
     };
+    // Set Content-Type only for methods that typically have a body
     if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
-        headers['Content-Type'] = 'application/json';
+        // Only set Content-Type if data is being sent
+        if (data) {
+            headers['Content-Type'] = 'application/json';
+        }
     }
 
     if (requiresAuth) {
       const token = localStorage.getItem('token');
       if (!token) {
         logger.error(`Authentication required for ${method} ${url}, but no token found.`);
-        throw new ApiError('Usuário não autenticado', 401);
+        // Automatically redirect or handle logout? For now, throw.
+        throw new ApiError('Usuário não autenticado. Por favor, faça login novamente.', 401);
       }
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -57,7 +63,7 @@ async function _apiRequest(
     const options: RequestInit = {
       method: method.toUpperCase(),
       headers,
-      signal: AbortSignal.timeout(method.toUpperCase() === 'GET' ? 20000 : 45000), // Longer timeout for POST/PUT/DELETE
+      signal: AbortSignal.timeout(method.toUpperCase() === 'GET' ? 20000 : 60000), // Increased POST/PUT timeout for potentially longer operations like Boleto
     };
 
     const bodyMethods = ['POST', 'PUT', 'PATCH'];
@@ -69,10 +75,12 @@ async function _apiRequest(
         throw new Error('Falha ao preparar dados da requisição.');
       }
     } else if (data && !bodyMethods.includes(options.method!)) {
+      // Only log warning if data is not null/undefined
       if (data !== null && data !== undefined) {
-        logger.warn(`Data provided for non-body method (${method}) ${url}. Ignoring data.`);
+          logger.warn(`Data provided for non-body method (${method}) ${url}. Ignoring data.`);
       }
     }
+
 
     return options;
   };
@@ -93,6 +101,22 @@ async function _apiRequest(
       const response = await fetch(url, options);
       logger.debug(`Response Status: ${response.status} for ${method} ${url}`);
 
+      // Check for Authentication Failure first
+      if (response.status === 401) {
+          logger.error(`Authentication error (401) for ${method} ${url}. Redirecting/logging out...`);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          // Consider throwing a specific error or navigating to login
+          // For now, throw ApiError which AuthContext might handle
+          throw new ApiError('Sessão inválida ou expirada. Por favor, faça login novamente.', 401);
+      }
+      // Check for other Forbidden errors
+      if (response.status === 403) {
+          logger.error(`Authorization error (403) for ${method} ${url}. User lacks permission.`);
+          throw new ApiError('Você não tem permissão para realizar esta ação.', 403);
+      }
+
+
       if (!response.ok) {
         let errorMessage = `Erro na API: ${response.status}`;
         let errorData: any = null;
@@ -102,18 +126,24 @@ async function _apiRequest(
              if (responseBodyText) {
                 try {
                     errorData = JSON.parse(responseBodyText);
-                    if (errorData && errorData.error) {
+                    // Prefer 'error' key if backend sends { "error": "..." }
+                    if (errorData && errorData.error && typeof errorData.error === 'string') {
                         errorMessage = errorData.error;
                     } else {
+                        // Fallback to generic message with status and beginning of text
                         errorMessage = `Erro na API (${response.status}): ${responseBodyText.substring(0, 200)}`;
                     }
                 } catch (jsonError) {
                     logger.debug('Error response body was not JSON:', responseBodyText.substring(0, 200));
+                    // Use status and beginning of text
                     errorMessage = `Erro na API (${response.status}): ${responseBodyText.substring(0, 200)}`;
                 }
+            } else {
+                errorMessage = `Erro ${response.status} - ${response.statusText || 'Erro desconhecido na API'}`;
             }
         } catch (readError) {
             logger.warn(`Could not read error response body for ${method} ${url} (Status: ${response.status})`);
+            errorMessage = `Erro ${response.status} - ${response.statusText || 'Não foi possível ler a resposta de erro da API'}`;
         }
         logger.error(`API Error (${method} ${url}): Status ${response.status}, Message: ${errorMessage}`, errorData);
         throw new ApiError(errorMessage, response.status, errorData);
@@ -122,66 +152,79 @@ async function _apiRequest(
       // Handle successful responses based on expected type
        if (response.status === 204 || response.headers.get('content-length') === '0') {
          logger.debug(`Received empty success response (Status ${response.status}) for ${method} ${url}. Returning null.`);
-         return null;
+         return null; // No content, successful
        }
 
+      // Handle ArrayBuffer specifically (e.g., for PDF)
       if (responseType === 'arrayBuffer') {
-          const buffer = await response.arrayBuffer();
-          logger.debug(`Received successful ArrayBuffer response (Length: ${buffer.byteLength}) for ${method} ${url}`);
-          return buffer;
-      } else { // Default to JSON
-          // Check content-type before assuming JSON
-           const contentType = response.headers.get('content-type');
-           if (contentType && contentType.includes('application/json')) {
-               try {
-                    const jsonData = await response.json();
-                    logger.debug(`Received successful JSON response for ${method} ${url}:`, JSON.stringify(jsonData).substring(0, 200) + (JSON.stringify(jsonData).length > 200 ? '...' : ''));
-                    return jsonData;
-               } catch (jsonError) {
-                    logger.error(`Failed to parse successful JSON response (Status ${response.status}) for ${method} ${url}:`, jsonError, 'Content-Type:', contentType);
-                    throw new Error('Formato de resposta JSON inválido recebido do servidor.');
-               }
-           } else {
-               // Handle unexpected successful content types if necessary
-               logger.warn(`Received successful response with unexpected Content-Type (${contentType}) for ${method} ${url}. Trying to read as text.`);
-               const textData = await response.text(); // Read as text as fallback
-               logger.debug(`Response text: ${textData.substring(0, 500)}`);
-               // Decide what to return: maybe throw error or return text? Throwing error is safer.
-               throw new Error(`Tipo de conteúdo inesperado recebido do servidor: ${contentType}`);
-           }
-
+          const contentType = response.headers.get('content-type');
+          // Add a check for expected PDF content type
+          if (contentType && contentType.toLowerCase().includes('application/pdf')) {
+                const buffer = await response.arrayBuffer();
+                logger.debug(`Received successful PDF response (Length: ${buffer.byteLength}) for ${method} ${url}`);
+                return buffer;
+          } else {
+              logger.error(`Expected PDF but received Content-Type: ${contentType} for ${method} ${url}`);
+              // Attempt to read as text to see if it's an error message disguised as success
+              const textResponse = await response.text();
+              logger.error(`Non-PDF response body: ${textResponse.substring(0, 500)}`);
+              throw new ApiError(`Resposta inesperada do servidor ao gerar PDF. Tipo: ${contentType}`, response.status, { responseText: textResponse });
+          }
       }
+
+      // Handle JSON (default)
+       const contentType = response.headers.get('content-type');
+       if (contentType && contentType.includes('application/json')) {
+           try {
+                const jsonData = await response.json();
+                logger.debug(`Received successful JSON response for ${method} ${url}:`, JSON.stringify(jsonData).substring(0, 200) + (JSON.stringify(jsonData).length > 200 ? '...' : ''));
+                return jsonData;
+           } catch (jsonError) {
+                logger.error(`Failed to parse successful JSON response (Status ${response.status}) for ${method} ${url}:`, jsonError, 'Content-Type:', contentType);
+                throw new Error('Formato de resposta JSON inválido recebido do servidor.');
+           }
+       } else {
+           // Handle unexpected successful content types if necessary
+           logger.warn(`Received successful response with unexpected Content-Type (${contentType}) for ${method} ${url}. Reading as text.`);
+           const textData = await response.text(); // Read as text as fallback
+           logger.debug(`Response text: ${textData.substring(0, 500)}`);
+           // Throwing error is safer than returning unexpected text
+           throw new Error(`Tipo de conteúdo inesperado (${contentType}) recebido do servidor.`);
+       }
 
     } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         logger.error(`Error during API request ${method} ${url} (Attempt ${attempt + 1}):`, lastError);
 
-        if (lastError instanceof ApiError && lastError.status === 401) {
-           logger.error('Authentication error (401). Aborting retries.');
-           localStorage.removeItem('token');
-           localStorage.removeItem('user');
+        // Re-throw auth errors immediately, no retry
+        if (lastError instanceof ApiError && (lastError.status === 401 || lastError.status === 403)) {
            throw lastError;
         }
-        if (lastError instanceof ApiError && (lastError.status && lastError.status >= 400 && lastError.status < 500 && lastError.status !== 401)) {
+        // Don't retry other client-side errors (4xx except 401/403)
+        if (lastError instanceof ApiError && (lastError.status && lastError.status >= 400 && lastError.status < 500)) {
           logger.warn(`Client error (${lastError.status}). Not retrying.`);
           throw lastError;
         }
 
+        // Check for retryable network/timeout errors
         const retryableErrorMessages = ['Failed to fetch', 'network error', 'Load failed'];
         const isTimeout = (error instanceof DOMException && error.name === 'AbortError');
         const isRetryableNetworkError = retryableErrorMessages.some(msg => lastError!.message.toLowerCase().includes(msg.toLowerCase()));
 
         if (!(isTimeout || isRetryableNetworkError)) {
            logger.warn(`Non-retryable error encountered: ${lastError.message}. Aborting retries.`);
-           throw lastError;
+           throw lastError; // Don't retry other errors
         }
 
+        // If max retries reached, throw the last encountered error
         if (attempt === maxRetries) {
           logger.error(`API request failed after ${maxRetries + 1} attempts for ${method} ${url}. Last error:`, lastError);
           throw lastError;
         }
+        // Otherwise, the loop continues to the next attempt
     }
   }
+    // Should technically be unreachable if loop completes, but satisfy TS
     throw lastError || new Error('Erro desconhecido na requisição API');
 }
 
@@ -253,16 +296,23 @@ export const getCustomerPanelStatistics = (customerCode: number): Promise<any> =
 };
 
 // --- Fiscal ---
-/**
- * Searches fiscal invoices.
- * @param payload - The search payload including filters, pagination, etc.
- */
 export const searchFiscalInvoices = (payload: any): Promise<any> =>
   _apiRequest(API_ENDPOINTS.FISCAL_INVOICES_SEARCH, 'POST', payload, true);
 
+export const generateDanfePdf = (accessKey: string): Promise<ArrayBuffer> =>
+  _apiRequest(API_ENDPOINTS.FISCAL_DANFE_GENERATE(accessKey), 'GET', null, true, 1, 'arrayBuffer');
+
+// --- Accounts Receivable --- NEW ---
 /**
- * Generates DANFE PDF. Expects ArrayBuffer as response.
- * @param accessKey - The 44-digit access key.
+ * Searches Accounts Receivable documents.
+ * @param payload - The search payload including filters, pagination, expand, order.
  */
-export const generateDanfePdf = (accessKey: string): Promise<ArrayBuffer> => // Explicitly expect ArrayBuffer
-  _apiRequest(API_ENDPOINTS.FISCAL_DANFE_GENERATE(accessKey), 'GET', null, true, 1, 'arrayBuffer'); // GET request, expect arrayBuffer
+export const searchReceivables = (payload: any): Promise<any> =>
+  _apiRequest(API_ENDPOINTS.AR_SEARCH, 'POST', payload, true);
+
+/**
+ * Generates a Boleto (Bank Slip) PDF. Expects ArrayBuffer as response.
+ * @param payload - The request payload containing branchCode, customerCode, receivableCode, installmentNumber.
+ */
+export const generateBoletoPdf = (payload: any): Promise<ArrayBuffer> =>
+  _apiRequest(API_ENDPOINTS.AR_BOLETO, 'POST', payload, true, 0, 'arrayBuffer'); // No retries for Boleto generation

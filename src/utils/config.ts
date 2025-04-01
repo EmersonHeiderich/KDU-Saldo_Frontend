@@ -31,11 +31,13 @@ export const API_ENDPOINTS = {
   CUSTOMER_DATA: `${API_BASE_URL}/api/customer_panel/data`, // For POST
   CUSTOMER_STATISTICS: `${API_BASE_URL}/api/customer_panel/statistics`, // For GET (uses query params)
 
-  // Fiscal --- NEW ---
+  // Fiscal
   FISCAL_INVOICES_SEARCH: `${API_BASE_URL}/api/fiscal/invoices/search`, // For POST search
-  // DANFE generation might involve multiple steps handled by the service,
-  // but if the backend exposes a direct endpoint for the final PDF:
   FISCAL_DANFE_GENERATE: (accessKey: string) => `${API_BASE_URL}/api/fiscal/danfe/${encodeURIComponent(accessKey)}`, // For GET PDF
+
+  // Accounts Receivable --- NEW ---
+  AR_SEARCH: `${API_BASE_URL}/api/accounts-receivable/search`, // For POST search
+  AR_BOLETO: `${API_BASE_URL}/api/accounts-receivable/boleto`, // For POST request PDF
 
 };
 

@@ -15,6 +15,7 @@ This layer contains the logic for interacting with the backend API, fetching dat
 
 ## Files
 
+*   **`accountsReceivableService.ts`**: Handles searching receivables and generating Boletos (Bank Slips). Interacts with `/api/accounts-receivable/*`.
 *   **`authService.ts`**: Handles login, logout, token verification flows. Interacts with `/api/auth/*`. Stores/retrieves token and user data from `localStorage`.
 *   **`customerPanelService.ts`**: Fetches and maps customer (PF/PJ) data and statistics. Interacts with `/api/customer_panel/*`. Includes formatting helpers.
 *   **`fabricService.ts`**: Fetches and maps fabric list data (balances, costs, details). Interacts with `/api/fabrics/*`. Includes sorting and export logic.

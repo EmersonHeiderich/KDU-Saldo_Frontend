@@ -5,34 +5,38 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Sidebar.module.css';
 
-// --- New Props ---
 interface SidebarProps {
     isCollapsed: boolean;
     onToggleCollapse: () => void;
 }
-// -----------------
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => { // Use props
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const mobileToggleButtonRef = useRef<HTMLButtonElement>(null); // Ref for Mobile toggle
+  const mobileToggleButtonRef = useRef<HTMLButtonElement>(null);
 
-  // --- Permissions (no changes needed) ---
+  // --- Permissions ---
   const defaultPermissions = {
     is_admin: false,
     can_access_products: false,
     can_access_fabrics: false,
     can_access_customer_panel: false,
     can_access_fiscal: false,
+    can_access_accounts_receivable: false, // Add AR permission
   };
-  const permissions = user?.permissions || defaultPermissions;
-  const isAdmin = permissions.is_admin;
-  const canAccessProducts = isAdmin || permissions.can_access_products;
-  const canAccessFabrics = isAdmin || permissions.can_access_fabrics;
-  const canAccessCustomerPanel = isAdmin || permissions.can_access_customer_panel;
-  const canAccessFiscal = isAdmin || permissions.can_access_fiscal;
+  // Ensure all expected permission keys exist in user?.permissions before destructuring or accessing
+   const userPermissions = user?.permissions
+       ? { ...defaultPermissions, ...user.permissions }
+       : defaultPermissions;
+
+  const isAdmin = userPermissions.is_admin;
+  const canAccessProducts = isAdmin || userPermissions.can_access_products;
+  const canAccessFabrics = isAdmin || userPermissions.can_access_fabrics;
+  const canAccessCustomerPanel = isAdmin || userPermissions.can_access_customer_panel;
+  const canAccessFiscal = isAdmin || userPermissions.can_access_fiscal;
+  const canAccessAR = isAdmin || userPermissions.can_access_accounts_receivable; // Check AR permission
 
   // --- Actions ---
   const openMobileSidebar = () => setIsMobileOpen(true);
@@ -43,7 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
     try { await logout(); } catch (error) { console.error('Erro ao fazer logout:', error); }
   };
 
-  // --- Event Listeners for Mobile Closing (no changes needed) ---
   // --- Event Listeners for Mobile Closing ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,8 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
         isMobileOpen &&
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node) &&
-        mobileToggleButtonRef.current && // Check if mobile toggle exists
-        !mobileToggleButtonRef.current.contains(event.target as Node) // Don't close if clicking mobile toggle
+        mobileToggleButtonRef.current &&
+        !mobileToggleButtonRef.current.contains(event.target as Node)
       ) {
         closeMobileSidebar();
       }
@@ -79,42 +82,40 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
   }, [location, closeMobileSidebar]);
 
   // --- Effect to close Desktop Sidebar on outside click ---
+  // (No changes needed here)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Only run if sidebar is expanded and not on mobile view
       if (
         !isCollapsed &&
-        !isMobileOpen && // Ensure mobile menu isn't open
+        !isMobileOpen &&
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
       ) {
-        onToggleCollapse(); // Minimize the sidebar
+        onToggleCollapse();
       }
     };
-
-    // Add listener only when sidebar is expanded
     if (!isCollapsed) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
-    // Cleanup listener
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isCollapsed, isMobileOpen, onToggleCollapse]); // Add isMobileOpen dependency
+  }, [isCollapsed, isMobileOpen, onToggleCollapse]);
 
 
-  // --- Menu Items (no changes needed) ---
-  const menuItems: { path: string; label: string; icon: string; requiresAuth: boolean }[] = [];
-   // Add items back
-   menuItems.push(
-       { path: '/', label: 'Início', icon: 'fas fa-home', requiresAuth: true },
-       { path: '/products', label: 'Produtos Acabados', icon: 'fas fa-tshirt', requiresAuth: canAccessProducts },
-       { path: '/fabrics', label: 'Tecidos', icon: 'fas fa-layer-group', requiresAuth: canAccessFabrics },
-       { path: '/customer-panel', label: 'Painel do Cliente', icon: 'fas fa-address-card', requiresAuth: canAccessCustomerPanel },
-       { path: '/fiscal', label: 'Módulo Fiscal', icon: 'fas fa-file-invoice-dollar', requiresAuth: canAccessFiscal },
-       { path: '/users', label: 'Usuários', icon: 'fas fa-users-cog', requiresAuth: isAdmin }
-   );
+  // --- Menu Items ---
+  // Define menu structure explicitly
+    const menuItems: { path: string; label: string; icon: string; requiresAuth: boolean }[] = [
+        { path: '/', label: 'Início', icon: 'fas fa-home', requiresAuth: true },
+        { path: '/products', label: 'Produtos Acabados', icon: 'fas fa-tshirt', requiresAuth: canAccessProducts },
+        { path: '/fabrics', label: 'Tecidos', icon: 'fas fa-layer-group', requiresAuth: canAccessFabrics },
+        { path: '/customer-panel', label: 'Painel do Cliente', icon: 'fas fa-address-card', requiresAuth: canAccessCustomerPanel },
+        { path: '/fiscal', label: 'Módulo Fiscal', icon: 'fas fa-file-invoice-dollar', requiresAuth: canAccessFiscal },
+        // --- NEW Accounts Receivable Item ---
+        { path: '/accounts-receivable', label: 'Contas a Receber', icon: 'fas fa-hand-holding-usd', requiresAuth: canAccessAR },
+        // --- Admin Item ---
+        { path: '/users', label: 'Usuários', icon: 'fas fa-users-cog', requiresAuth: isAdmin }
+    ];
 
 
   return (
@@ -142,23 +143,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
       <nav
         ref={sidebarRef}
         id="main-sidebar"
-        // Apply mobile active AND desktop collapsed classes
         className={`${styles.sidebar} ${isMobileOpen ? styles.active : ''} ${isCollapsed ? styles.collapsed : ''}`}
         aria-label="Menu Principal"
       >
         <div className={styles.sidebarHeader}>
-          {/* Conditionally render Title or Icon with click handler */}
           {!isCollapsed && <h2>Menu</h2>}
           {isCollapsed && (
             <i
               className={`fas fa-bars ${styles.collapsedHeaderIcon}`}
-              onClick={onToggleCollapse} // Add click handler here
-              style={{ cursor: 'pointer' }} // Indicate it's clickable
-              title="Expandir menu" // Add title for accessibility
+              onClick={onToggleCollapse}
+              style={{ cursor: 'pointer' }}
+              title="Expandir menu"
             ></i>
           )}
-
-          {/* Mobile Close Button */}
           <button
             className={styles.sidebarClose}
             onClick={closeMobileSidebar}
@@ -166,28 +163,25 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           >
             <i className="fas fa-times"></i>
           </button>
-
-          {/* Desktop Collapse Button REMOVED */}
-
         </div>
 
         {/* Menu List */}
         <ul className={styles.sidebarMenu}>
+           {/* Filter and map menu items based on permission */}
            {menuItems.filter(item => item.requiresAuth).map(item => (
-              <li key={item.path} title={isCollapsed ? item.label : undefined}> {/* Show label on hover when collapsed */}
+              <li key={item.path} title={isCollapsed ? item.label : undefined}>
                  <NavLink
                     to={item.path}
                     className={({ isActive }) => isActive ? styles.activeLink : styles.inactiveLink}
-                    // onClick={closeMobileSidebar} // Close handled by location useEffect
-                    end={item.path === '/'}
+                    end={item.path === '/'} // Ensure exact match for Home
                  >
                     <i className={item.icon}></i>
-                    {/* Conditionally render label text */}
                     {!isCollapsed && <span>{item.label}</span>}
                  </NavLink>
               </li>
            ))}
 
+          {/* Logout Item */}
           <li className={styles.menuDivider}></li>
           <li title={isCollapsed ? "Sair" : undefined}>
             <a
@@ -203,10 +197,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
 
         {/* Sidebar Footer */}
         <div className={styles.sidebarFooter}>
-          {/* Conditionally render content based on collapse */}
           {!isCollapsed && user?.name && <p title={user.username}>Usuário: {user.name}</p>}
            {!isCollapsed && <p className={styles.appVersion}>v1.0.1</p>}
-           {isCollapsed && <i className="fas fa-user-circle" title={`Usuário: ${user?.name || user?.username}`}></i>} {/* Show user icon when collapsed */}
+           {isCollapsed && <i className="fas fa-user-circle" title={`Usuário: ${user?.name || user?.username}`}></i>}
         </div>
       </nav>
     </>
