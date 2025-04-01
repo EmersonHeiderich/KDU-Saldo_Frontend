@@ -279,3 +279,104 @@
         grid-template-columns: 1fr; /* Stack fields in modal on small screens */
     }
 }
+
+/* --- Advanced Filters Modal Styles --- */
+.advancedFiltersModal {
+    max-width: 900px; /* Wider modal for more filters */
+    max-height: 80vh; /* Limit height */
+}
+
+.modalFormGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: 14px 20px; /* Row and column gap */
+    padding: 10px 0;
+}
+
+.modalFormGrid .formGroup {
+    margin-bottom: 0;
+}
+
+.modalFormGrid .formGroup.fullWidth {
+    grid-column: 1 / -1; /* Make element span all columns */
+}
+
+/* Checkbox group styling */
+.checkboxGroupScrollable { /* New container for scrolling */
+    max-height: 120px; /* Limit height */
+    overflow-y: auto; /* Enable vertical scroll */
+    padding: 8px;
+    border: 1px solid var(--border-color-light);
+    border-radius: var(--border-radius-small);
+    background-color: var(--bg-white); /* Background for scroll area */
+    display: flex;
+    flex-direction: column; /* Stack checkboxes vertically */
+    gap: 8px; /* Space between checkboxes */
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between checkbox and text */
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin-bottom: 0;
+}
+.checkboxLabel input[type="checkbox"] {
+    width: 15px; /* Slightly smaller checkbox */
+    height: 15px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+    margin: 0; /* Reset margin */
+    flex-shrink: 0;
+}
+.checkboxLabel span {
+    line-height: 1.2; /* Adjust line height for better alignment */
+}
+
+
+/* Footer for modal */
+.modalFooter {
+    padding: 12px 16px;
+    background-color: var(--bg-secondary);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid var(--border-color-light);
+    margin-top: 15px; /* Space above footer */
+}
+
+/* Badge on Filter Button */
+.filterCountBadge {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 8px;
+    margin-left: 6px;
+    line-height: 1;
+    vertical-align: middle;
+    min-width: 16px; /* Ensure minimum width */
+    text-align: center;
+}
+
+/* Minor adjustment for filter actions spacing */
+.filterActions .btn.info {
+    margin-left: 0; /* Remove auto margin */
+    margin-right: auto; /* Push advanced filter button left, others right */
+}
+
+/* Adjust grid gap for smaller screens */
+@media (max-width: 768px) {
+    .modalFormGrid {
+        gap: 12px 15px;
+    }
+    .filterActions .btn.info {
+         margin-left: 0;
+         margin-right: 10px; /* Add some space before search button */
+    }
+}
